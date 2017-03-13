@@ -8,26 +8,16 @@ This project is about simulation and inference and stuff
 
 
 
+For random variables drawn from a (continuous) exponential distribution of rate $\lambda$, the propability dirstribution function is given by
+$$
+P(x) = \lambda e^{-\lambda x}  \quad (x \geq 0).
+$$ 
 
-```r
-summary(cars)
-```
+This distribution has a population mean of $\mu =1/\lambda$ a population variance of $1/\lambda^2$, and a standard deviation of $\sigma = 1/\lambda$.
 
-```
-##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00
-```
+CLT
+The central limit theorem states that the mean of a sample of iid random variables should itself behave like a random **normal** variable, with mean equal to the mean of the original population, and variance equal to **something about the standard error**
 
-
-This summation expression $\sum_{i=1}^n X_i$ appears inline.
-
-
-$$\sum_{i=1}^n X_i$$
 
 # Simulation
 
@@ -83,6 +73,10 @@ require(gridExtra)
 ```
 
 ```
+## Warning: package 'gridExtra' was built under R version 3.1.3
+```
+
+```
 ## 
 ## Attaching package: 'gridExtra'
 ```
@@ -93,6 +87,7 @@ require(gridExtra)
 ##     combine
 ```
 
+generate two datasets, the first is a sample of 1000 iid random variables drawn from an exponential distribution with rate $\lambda = 0.2$. The second dataset consists of 1000 sample means, where each sample consists of 40 iid random variables drawn from an exponential distribution with rate $\lambda=0.2$
 
 
 ```r
@@ -100,32 +95,72 @@ set.seed(5074491)
 lambda<-0.2
 samples1k<-rexp(1000,rate=lambda)
 means1kx40<-replicate(1000,mean(rexp(40,rate=lambda)))
-data<-data.frame(samples1k,means1kx40)
-names(data)<-c('expSamples','meanExp40Samples')
+# data1k<- data.frame(samples1k)
+# names(data1k)<-'expSamples'
+# data1kx40<-data.frame(means1kx40)
+# names(data1kx40)<-'meanExp40Samples'
+
+#names(data)<-c('expSamples','meanExp40Samples')
 ```
 
 ## sample mean
 
-For random variables drawn from a (continuous) exponential distribution of rate $\lambda$, the propability dirstribution function is given by
-$$
-P(x) = \lambda e^{-\lambda x}.
-$$ 
+The population mean for an exponential distribution is equal to $1/\lambda$, which in this case is $1/0.2 = 5$.
+The sample mean for the 1000 random variables is 
 
-This distribution has a population mean of $\lambda$ and a standard deviation of $\sigma = \lambda$
+
+```r
+mean(samples1k)
+```
+
+```
+## [1] 5.174467
+```
+the mean of the 1000 sample means is
+
+
+```r
+mean(means1kx40)
+```
+
+```
+## [1] 5.000418
+```
+
+moose
 
 
 ```r
 # plot distributions
-hist_exp<-ggplot(data=data,aes(x=samples1k,fill=..count..)) + geom_histogram(binwidth=0.2) +
+hist_exp<-ggplot(aes(x=samples1k,fill=..count..)) + geom_histogram(binwidth=0.2) +
 labs(title='distribution of 1000 random exponential variables',x='value',y='count') +
 scale_fill_gradientn(colours=c('blue','purple'))
-hist_expMean<-ggplot(data=data,aes(x=means1kx40,fill=..count..)) + geom_histogram(binwidth=0.2) +
-labs(title='distribution of 1000 sample means of 40 random exponential variables',x='value',y='count') +scale_fill_gradientn(colours=c('blue','purple'))
+```
 
+```
+## Error: ggplot2 doesn't know how to deal with data of class uneval
+```
+
+```r
+hist_expMean<-ggplot(aes(x=means1kx40,fill=..count..)) + geom_histogram(binwidth=0.2) +
+labs(title='distribution of 1000 sample means of 40 random exponential variables',x='value',y='count') +scale_fill_gradientn(colours=c('blue','purple'))
+```
+
+```
+## Error: ggplot2 doesn't know how to deal with data of class uneval
+```
+
+```r
 grid.arrange(hist_exp,hist_expMean,nrow=1)
 ```
 
-![plot of chunk plot](figure/plot-1.png)
+```
+## Error in arrangeGrob(...): object 'hist_exp' not found
+```
+
+```r
+# add curves to these, the population distribution and also the exponential and gausssian fits to our sampled data
+```
 
 
 
