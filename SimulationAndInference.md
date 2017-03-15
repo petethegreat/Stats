@@ -2,28 +2,30 @@
 title "simulation and inference: statistical inference course project"
 author: "Peter Thompson"
 ---
-# Introduction
+## Introduction
 
-This project is about simulation and inference and stuff
+This project is about simulation of random variables and the central limit theorem. The means of 1000 samples of 40 iid random variables (drawn from an exponential distribution) are treated as a random sample, and compared to a normal distribution.
 
 
 
-For random variables drawn from a (continuous) exponential distribution of rate $\lambda$, the propability dirstribution function is given by
+For random variables drawn from a (continuous) exponential distribution of rate $\lambda$, the propability distribution function is given by
 $$
 P(x) = \lambda e^{-\lambda x}  \quad (x \geq 0).
 $$ 
 
 This distribution has a population mean of $\mu =1/\lambda$ a population variance of $1/\lambda^2$, and a standard deviation of $\sigma = 1/\lambda$.
 
+
 CLT
 The central limit theorem states that the mean of a sample of iid random variables should itself behave like a random **normal** variable, with mean equal to the mean of the original population, and variance equal to **something about the standard error**
 
 
-# Simulation
+## Simulation
 
 
 ```r
 #opts_chunk$set(fig.width=8, fig.height=8,dpi=144)
+#https://github.com/lgreski/datasciencectacontent/blob/master/markdown/statinf-expDistChecklist.md
 require(ggplot2)
 ```
 
@@ -73,10 +75,6 @@ require(gridExtra)
 ```
 
 ```
-## Warning: package 'gridExtra' was built under R version 3.1.3
-```
-
-```
 ## 
 ## Attaching package: 'gridExtra'
 ```
@@ -105,29 +103,59 @@ means1kx40<-replicate(1000,mean(rexp(40,rate=lambda)))
 
 ## sample mean
 
-The population mean for an exponential distribution is equal to $1/\lambda$, which in this case is $1/0.2 = 5$.
-The sample mean for the 1000 random variables is 
+The population mean for an exponential distribution is equal to $1/\lambda$, which in this case is $1/0.2 = 5$. For each sample, the mean should be close to this value. The mean of 1000 sample means should also be close to this value. For the samples generated for this report, the mean is given by
 
 
 ```r
-mean(samples1k)
-```
-
-```
-## [1] 5.174467
-```
-the mean of the 1000 sample means is
-
-
-```r
-mean(means1kx40)
+themean<-mean(means1kx40)
+themean
 ```
 
 ```
 ## [1] 5.000418
 ```
 
-moose
+
+## sample variance
+As the sample under consideration is a set of means, the variance of this sample should be given by 
+
+$$
+var(\bar{X}) = \frac{\sigma^2}{n},
+$$
+
+which is the square of the standard error in the mean. For the exponential distribution, the variance ($\sigma^2$) is given by $1/\lambda^2$. The expected variance for our sample of means would then be
+$$
+var(\bar{X}) = \frac{1}{\lambda^2 n}
+$$
+
+For samples of 40 variables, with $\lambda = 0.2$, we would expect the means to have variance 0.625
+
+
+```r
+var(means1kx40)
+```
+
+```
+## [1] 0.5938206
+```
+The value here is 0.594, which is pretty close to the expected 0.625. 
+
+compare quantiles. 
+
+```r
+sigmas<-c(1,2,3)
+fractions<-sapply(sigmas, function(x) { sum((means1kx40 < (themean + x/lambda) ) & (means1kx40 >() themean - x/lambda))/length(means1kx40)} )
+fractions
+```
+
+```
+## Error: <text>:2:98: unexpected ')'
+## 1: sigmas<-c(1,2,3)
+## 2: fractions<-sapply(sigmas, function(x) { sum((means1kx40 < (themean + x/lambda) ) & (means1kx40 >()
+##                                                                                                     ^
+```
+
+
 
 
 ```r
@@ -172,6 +200,5 @@ Illustrate via simulation and associated explanatory text the **properties of th
 Show the sample mean and compare it to the theoretical mean of the distribution.
 Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
 Show that the distribution is approximately normal.
-
 
 

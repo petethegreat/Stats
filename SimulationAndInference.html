@@ -204,11 +204,11 @@ hr {
 </head>
 
 <body>
-<h1>Introduction</h1>
+<h2>Introduction</h2>
 
-<p>This project is about simulation and inference and stuff</p>
+<p>This project is about simulation of random variables and the central limit theorem. The means of 1000 samples of 40 iid random variables (drawn from an exponential distribution) are treated as a random sample, and compared to a normal distribution.</p>
 
-<p>For random variables drawn from a (continuous) exponential distribution of rate \(\lambda\), the propability dirstribution function is given by
+<p>For random variables drawn from a (continuous) exponential distribution of rate \(\lambda\), the propability distribution function is given by
 \[
 P(x) = \lambda e^{-\lambda x}  \quad (x \geq 0).
 \] </p>
@@ -218,9 +218,10 @@ P(x) = \lambda e^{-\lambda x}  \quad (x \geq 0).
 <p>CLT
 The central limit theorem states that the mean of a sample of iid random variables should itself behave like a random <strong>normal</strong> variable, with mean equal to the mean of the original population, and variance equal to <strong>something about the standard error</strong></p>
 
-<h1>Simulation</h1>
+<h2>Simulation</h2>
 
 <pre><code class="r">#opts_chunk$set(fig.width=8, fig.height=8,dpi=144)
+#https://github.com/lgreski/datasciencectacontent/blob/master/markdown/statinf-expDistChecklist.md
 require(ggplot2)
 </code></pre>
 
@@ -259,9 +260,6 @@ require(ggplot2)
 <pre><code>## Loading required package: gridExtra
 </code></pre>
 
-<pre><code>## Warning: package &#39;gridExtra&#39; was built under R version 3.1.3
-</code></pre>
-
 <pre><code>## 
 ## Attaching package: &#39;gridExtra&#39;
 </code></pre>
@@ -287,24 +285,50 @@ means1kx40&lt;-replicate(1000,mean(rexp(40,rate=lambda)))
 
 <h2>sample mean</h2>
 
-<p>The population mean for an exponential distribution is equal to \(1/\lambda\), which in this case is \(1/0.2 = 5\).
-The sample mean for the 1000 random variables is </p>
+<p>The population mean for an exponential distribution is equal to \(1/\lambda\), which in this case is \(1/0.2 = 5\). For each sample, the mean should be close to this value. The mean of 1000 sample means should also be close to this value. For the samples generated for this report, the mean is given by</p>
 
-<pre><code class="r">mean(samples1k)
-</code></pre>
-
-<pre><code>## [1] 5.174467
-</code></pre>
-
-<p>the mean of the 1000 sample means is</p>
-
-<pre><code class="r">mean(means1kx40)
+<pre><code class="r">themean&lt;-mean(means1kx40)
+themean
 </code></pre>
 
 <pre><code>## [1] 5.000418
 </code></pre>
 
-<p>moose</p>
+<h2>sample variance</h2>
+
+<p>As the sample under consideration is a set of means, the variance of this sample should be given by </p>
+
+<p>\[
+var(\bar{X}) = \frac{\sigma^2}{n},
+\]</p>
+
+<p>which is the square of the standard error in the mean. For the exponential distribution, the variance (\(\sigma^2\)) is given by \(1/\lambda^2\). The expected variance for our sample of means would then be
+\[
+var(\bar{X}) = \frac{1}{\lambda^2 n}
+\]</p>
+
+<p>For samples of 40 variables, with \(\lambda = 0.2\), we would expect the means to have variance 0.625</p>
+
+<pre><code class="r">var(means1kx40)
+</code></pre>
+
+<pre><code>## [1] 0.5938206
+</code></pre>
+
+<p>The value here is 0.594, which is pretty close to the expected 0.625. </p>
+
+<p>compare quantiles. </p>
+
+<pre><code class="r">sigmas&lt;-c(1,2,3)
+fractions&lt;-sapply(sigmas, function(x) { sum((means1kx40 &lt; (themean + x/lambda) ) &amp; (means1kx40 &gt;() themean - x/lambda))/length(means1kx40)} )
+fractions
+</code></pre>
+
+<pre><code>## Error: &lt;text&gt;:2:98: unexpected &#39;)&#39;
+## 1: sigmas&lt;-c(1,2,3)
+## 2: fractions&lt;-sapply(sigmas, function(x) { sum((means1kx40 &lt; (themean + x/lambda) ) &amp; (means1kx40 &gt;()
+##                                                                                                     ^
+</code></pre>
 
 <pre><code class="r"># plot distributions
 hist_exp&lt;-ggplot(aes(x=samples1k,fill=..count..)) + geom_histogram(binwidth=0.2) +
