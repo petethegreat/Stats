@@ -144,15 +144,12 @@ compare quantiles.
 
 ```r
 sigmas<-c(1,2,3)
-fractions<-sapply(sigmas, function(x) { sum((means1kx40 < (themean + x/lambda) ) & (means1kx40 >() themean - x/lambda))/length(means1kx40)} )
+fractions<-sapply(sigmas, function(x) { sum((means1kx40 < (themean + x/lambda) ) & (means1kx40 > (themean - x/lambda)))/length(means1kx40)}) 
 fractions
 ```
 
 ```
-## Error: <text>:2:98: unexpected ')'
-## 1: sigmas<-c(1,2,3)
-## 2: fractions<-sapply(sigmas, function(x) { sum((means1kx40 < (themean + x/lambda) ) & (means1kx40 >()
-##                                                                                                     ^
+## [1] 1 1 1
 ```
 
 

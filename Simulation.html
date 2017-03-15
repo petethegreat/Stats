@@ -320,14 +320,11 @@ var(\bar{X}) = \frac{1}{\lambda^2 n}
 <p>compare quantiles. </p>
 
 <pre><code class="r">sigmas&lt;-c(1,2,3)
-fractions&lt;-sapply(sigmas, function(x) { sum((means1kx40 &lt; (themean + x/lambda) ) &amp; (means1kx40 &gt;() themean - x/lambda))/length(means1kx40)} )
+fractions&lt;-sapply(sigmas, function(x) { sum((means1kx40 &lt; (themean + x/lambda) ) &amp; (means1kx40 &gt; (themean - x/lambda)))/length(means1kx40)}) 
 fractions
 </code></pre>
 
-<pre><code>## Error: &lt;text&gt;:2:98: unexpected &#39;)&#39;
-## 1: sigmas&lt;-c(1,2,3)
-## 2: fractions&lt;-sapply(sigmas, function(x) { sum((means1kx40 &lt; (themean + x/lambda) ) &amp; (means1kx40 &gt;()
-##                                                                                                     ^
+<pre><code>## [1] 1 1 1
 </code></pre>
 
 <pre><code class="r"># plot distributions

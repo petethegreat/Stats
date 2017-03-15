@@ -79,7 +79,7 @@ The value here is 0.594, which is pretty close to the expected 0.625.
 compare quantiles. 
 ```{r}
 sigmas<-c(1,2,3)
-fractions<-sapply(sigmas, function(x) { sum((means1kx40 < (themean + x/lambda) ) & (means1kx40 >() themean - x/lambda))/length(means1kx40)} )
+fractions<-sapply(sigmas, function(x) { sum((means1kx40 < (themean + x/(lambda*sqrt(40)) )) & (means1kx40 > (themean - x/(lambda*sqrt(40)))))/length(means1kx40)}) 
 fractions
 ```
 
