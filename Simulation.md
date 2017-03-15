@@ -139,17 +139,35 @@ var(means1kx40)
 ## [1] 0.5938206
 ```
 The value here is 0.594, which is pretty close to the expected 0.625. 
+Another way to check that the distribution is normal is to evaluate the probability of a variable lying within a certain range of the mean. For a normal distribution, 68% of the values should lie within one standard deviation of the mean. For our sample of exponential means, this information is summarised in the table below
 
-compare quantiles. 
+X | Area within $X\sigma$ of mean for a normal distribution | fraction within $X\sigma$ for sample of means |
+--- | ------------ | -----------------|
+1|0.683 |0.706 |
+2|0.954 |0.957 | 
+3|0.997 |0.998 |
+4|1.000 |1.000 |
+
+
 
 ```r
-sigmas<-c(1,2,3)
-fractions<-sapply(sigmas, function(x) { sum((means1kx40 < (themean + x/lambda) ) & (means1kx40 > (themean - x/lambda)))/length(means1kx40)}) 
-fractions
+sigmas<-c(1,2,3,4)
+fractions<-sapply(sigmas, function(x) { sum((means1kx40 < (themean + x/(lambda*sqrt(40)) )) & (means1kx40 > (themean - x/(lambda*sqrt(40)))))/length(means1kx40)}) 
+round(fractions,digits=3)
 ```
 
 ```
-## [1] 1 1 1
+## [1] 0.706 0.957 0.998 1.000
+```
+
+```r
+# normal distribution
+normfracs<-sapply(sigmas,function(x) { pnorm(x) - pnorm(-x)})
+round(normfracs,digits=3)
+```
+
+```
+## [1] 0.683 0.954 0.997 1.000
 ```
 
 
