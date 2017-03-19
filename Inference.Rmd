@@ -1,0 +1,50 @@
+--- 
+title "simulation and the Central limit theorem: statistical inference course project"
+author: "Peter Thompson"
+---
+# Inference
+
+## Synopsis
+something about toothgrowth
+
+
+### Data Summary
+
+ |supp | dose | meanlen | varlen |
+ |-----|------|---------|--------|
+ |  OJ |  0.5 |  13.23  |19.8890 |
+ |  OJ |  1.0 |  22.70  |15.2956 |
+ |  OJ |  2.0 |  26.06  | 7.0493 |
+ |  VC |  0.5 |   7.98  | 7.5440 |
+ |  VC |  1.0 |  16.77  | 6.3268 |
+ |  VC |  2.0 |  26.14  |23.0182 |
+
+OJ seems to do more.
+
+hypothesis tests:
+OJ is better than VC
+higher dose is better
+growth per dose?
+
+growth per dose,  (or oj >< VC, two sided)
+dosage - test 0.5 vs 2.0, 0.5 vs 1.0, 1.0 vs 2.0
+Dosage regardless of method
+method regardless of dose
+method - growth per unit dose
+
+
+Can't use paired test, because we can't compute the differences (we have 60 seperate hamsters, not 10 that were fed vitamin c multiple times via different methods). independent group t intervals (unequal variance), with alternative that the difference is greater than zero (mu2.0 - mu 0.5)
+
+## Appendix
+
+```{r,load}
+head(ToothGrowth)
+ToothGrowth %>% group_by(supp,dose) %>% summarise(meanlen=mean(len),varlen=var(len))
+```
+
+
+
+```{r,plot}
+ggplot(data=ToothGrowth,aes(x=len)) + geom_histogram(aes(fill=..count..)) + facet_grid( supp ~dose) + scale_fill_gradientn(colours=c('blue','purple'))
+```
+
