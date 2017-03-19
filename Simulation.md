@@ -1,24 +1,22 @@
 --- 
-title "simulation and inference: statistical inference course project"
+title "simulation and the Central limit theorem: statistical inference course project"
 author: "Peter Thompson"
 ---
-## Introduction
+# The Central Limit Theorem - simulation of random exponential samples
+## Synopsis
 
 This project is about simulation of random variables and the central limit theorem. The means of 1000 samples of 40 iid random variables (drawn from an exponential distribution) are treated as a random sample, and compared to a normal distribution.
-
-
+## Exponential distribution
 
 For random variables drawn from a (continuous) exponential distribution of rate $\lambda$, the propability distribution function is given by
 $$
-P(x) = \lambda e^{-\lambda x}  \quad (x \geq 0).
+P(x) = \lambda e^{-\lambda x} , \quad x \geq 0.
 $$ 
 
 This distribution has a population mean of $\mu =1/\lambda$ a population variance of $1/\lambda^2$, and a standard deviation of $\sigma = 1/\lambda$.
 
-
-CLT
-The central limit theorem states that the mean of a sample of iid random variables should itself behave like a random **normal** variable, with mean equal to the mean of the original population, and variance equal to **something about the standard error**
-
+## Central Limit Theorem
+The central limit theorem states that as the sample size increases the mean of a sample of iid random variables should itself behave like a random normal variable, with mean equal to the mean of the original population, and stamdard deviation equal to the standard error of the sample mean.
 
 ## Simulation
 
@@ -59,14 +57,6 @@ require(dplyr)
 ```
 
 ```r
-require(ggmap)
-```
-
-```
-## Loading required package: ggmap
-```
-
-```r
 require(gridExtra)
 ```
 
@@ -90,9 +80,10 @@ generate two datasets, the first is a sample of 1000 iid random variables drawn 
 
 ```r
 set.seed(5074491)
+samples<-1000
 lambda<-0.2
-samples1k<-rexp(1000,rate=lambda)
-means1kx40<-replicate(1000,mean(rexp(40,rate=lambda)))
+samples1k<-rexp(samples,rate=lambda)
+means1kx40<-replicate(samples,mean(rexp(40,rate=lambda)))
 # data1k<- data.frame(samples1k)
 # names(data1k)<-'expSamples'
 # data1kx40<-data.frame(means1kx40)
@@ -142,7 +133,7 @@ The value here is 0.594, which is pretty close to the expected 0.625.
 Another way to check that the distribution is normal is to evaluate the probability of a variable lying within a certain range of the mean. For a normal distribution, 68% of the values should lie within one standard deviation of the mean. For our sample of exponential means, this information is summarised in the table below
 
 X | Area within $X\sigma$ of mean for a normal distribution | fraction within $X\sigma$ for sample of means |
---- | ------------ | -----------------|
+--- | --------------------- | ---------------------|
 1|0.683 |0.706 |
 2|0.954 |0.957 | 
 3|0.997 |0.998 |
@@ -175,31 +166,21 @@ round(normfracs,digits=3)
 
 ```r
 # plot distributions
-hist_exp<-ggplot(aes(x=samples1k,fill=..count..)) + geom_histogram(binwidth=0.2) +
-labs(title='distribution of 1000 random exponential variables',x='value',y='count') +
-scale_fill_gradientn(colours=c('blue','purple'))
-```
+dnormscale<-function(x,scale=1.0,...) { scale*dnorm(x,...)}
+dexpscale<-function(x,scale=1.0,...) { scale*dexp(x,...)}
+df<-data.frame(samples1k,means1kx40)
+hist_exp<-ggplot(data=df,aes(x=samples1k)) + geom_histogram(binwidth=0.2,aes(fill=..count..)) +labs(title='distribution of 1000 random exponential variables',x='value',y='count') +
+scale_fill_gradientn(colours=c('blue','purple')) + stat_function(fun=dexpscale,colour='red',args=list(scale=samples*0.2,rate=lambda))+ guides(fill=F)
 
-```
-## Error: ggplot2 doesn't know how to deal with data of class uneval
-```
+hist_expMean<-ggplot(data=df,aes(x=means1kx40)) + geom_histogram(binwidth=0.2,aes(fill=..count..)) +
+labs(title='distribution of 1000 sample means of 40 random exponential variables',x='value',y='count') +scale_fill_gradientn(colours=c('blue','purple')) +  guides(fill=F)+
+stat_function(fun=dnormscale,colour='red',args=list(scale=0.2*samples,mean=1/lambda,sd=1/(lambda*sqrt(40))))
 
-```r
-hist_expMean<-ggplot(aes(x=means1kx40,fill=..count..)) + geom_histogram(binwidth=0.2) +
-labs(title='distribution of 1000 sample means of 40 random exponential variables',x='value',y='count') +scale_fill_gradientn(colours=c('blue','purple'))
-```
-
-```
-## Error: ggplot2 doesn't know how to deal with data of class uneval
-```
-
-```r
+#hist_exp
 grid.arrange(hist_exp,hist_expMean,nrow=1)
 ```
 
-```
-## Error in arrangeGrob(...): object 'hist_exp' not found
-```
+![plot of chunk plot](figure/plot-1.png)
 
 ```r
 # add curves to these, the population distribution and also the exponential and gausssian fits to our sampled data
