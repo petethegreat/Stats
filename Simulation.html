@@ -210,119 +210,49 @@ hr {
 
 <p>This project is about simulation of random variables and the central limit theorem. The means of 1000 samples of 40 iid random variables (drawn from an exponential distribution) are treated as a random sample, and compared to a normal distribution.</p>
 
-<h2>Exponential distribution</h2>
+<h3>Exponential distribution</h3>
 
 <p>For random variables drawn from a (continuous) exponential distribution of rate \(\lambda\), the propability distribution function is given by
 \[
 P(x) = \lambda e^{-\lambda x} , \quad x \geq 0.
 \] </p>
 
-<p>This distribution has a population mean of \(\mu =1/\lambda\) a population variance of \(1/\lambda^2\), and a standard deviation of \(\sigma = 1/\lambda\).</p>
+<p>This distribution has a population mean of \(\mu =1/\lambda\), a population variance of \(1/\lambda^2\), and a standard deviation of \(\sigma = 1/\lambda\).</p>
 
-<h2>Central Limit Theorem</h2>
+<h3>Central Limit Theorem</h3>
 
 <p>The central limit theorem states that as the sample size increases the mean of a sample of iid random variables should itself behave like a random normal variable, with mean equal to the mean of the original population, and stamdard deviation equal to the standard error of the sample mean.</p>
 
 <h2>Simulation</h2>
 
-<pre><code class="r">#opts_chunk$set(fig.width=8, fig.height=8,dpi=144)
-#https://github.com/lgreski/datasciencectacontent/blob/master/markdown/statinf-expDistChecklist.md
-require(ggplot2)
-</code></pre>
+<p>Two datasets will be generated via simulation, the first is a sample of 1000 iid random variables drawn from an exponential distribution with rate \(\lambda = 0.2\). The second dataset consists of 1000 sample means, where each sample consists of 40 iid random variables drawn from an exponential distribution with rate \(\lambda=0.2\). The R code used to compute all results in this report is listed in the appendix.</p>
 
-<pre><code>## Loading required package: ggplot2
-</code></pre>
+<h3>Sample Mean</h3>
 
-<pre><code class="r">require(dplyr)
-</code></pre>
+<p>The population mean for an exponential distribution is equal to \(1/\lambda\), which in this case is \(1/0.2 = 5\). For each sample, the mean should be close to this value. The mean of 1000 sample means should also be close to this value. For the samples generated for this report, the mean is equal to 5.0004, which is in good agreement with the expected value.</p>
 
-<pre><code>## Loading required package: dplyr
-</code></pre>
-
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;
-</code></pre>
-
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag
-</code></pre>
-
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union
-</code></pre>
-
-<pre><code class="r">require(gridExtra)
-</code></pre>
-
-<pre><code>## Loading required package: gridExtra
-</code></pre>
-
-<pre><code>## 
-## Attaching package: &#39;gridExtra&#39;
-</code></pre>
-
-<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     combine
-</code></pre>
-
-<p>generate two datasets, the first is a sample of 1000 iid random variables drawn from an exponential distribution with rate \(\lambda = 0.2\). The second dataset consists of 1000 sample means, where each sample consists of 40 iid random variables drawn from an exponential distribution with rate \(\lambda=0.2\)</p>
-
-<pre><code class="r">set.seed(5074491)
-samples&lt;-1000
-lambda&lt;-0.2
-samples1k&lt;-rexp(samples,rate=lambda)
-means1kx40&lt;-replicate(samples,mean(rexp(40,rate=lambda)))
-# data1k&lt;- data.frame(samples1k)
-# names(data1k)&lt;-&#39;expSamples&#39;
-# data1kx40&lt;-data.frame(means1kx40)
-# names(data1kx40)&lt;-&#39;meanExp40Samples&#39;
-
-#names(data)&lt;-c(&#39;expSamples&#39;,&#39;meanExp40Samples&#39;)
-</code></pre>
-
-<h2>sample mean</h2>
-
-<p>The population mean for an exponential distribution is equal to \(1/\lambda\), which in this case is \(1/0.2 = 5\). For each sample, the mean should be close to this value. The mean of 1000 sample means should also be close to this value. For the samples generated for this report, the mean is given by</p>
-
-<pre><code class="r">themean&lt;-mean(means1kx40)
-themean
-</code></pre>
-
-<pre><code>## [1] 5.000418
-</code></pre>
-
-<h2>sample variance</h2>
+<h3>Sample Variance</h3>
 
 <p>As the sample under consideration is a set of means, the variance of this sample should be given by </p>
 
 <p>\[
-var(\bar{X}) = \frac{\sigma^2}{n},
+\mathrm{var}(\bar{X}) = \frac{\sigma^2}{n},
 \]</p>
 
 <p>which is the square of the standard error in the mean. For the exponential distribution, the variance (\(\sigma^2\)) is given by \(1/\lambda^2\). The expected variance for our sample of means would then be
 \[
-var(\bar{X}) = \frac{1}{\lambda^2 n}
+\mathrm{var}(\bar{X}) = \frac{1}{\lambda^2 n}
 \]</p>
 
-<p>For samples of 40 variables, with \(\lambda = 0.2\), we would expect the means to have variance 0.625</p>
+<p>For samples of 40 variables, with \(\lambda = 0.2\), we would expect the means to have variance 0.625. The value obtained from the simulated samples is equal to 0.594, which is within 5% of the expected value.</p>
 
-<pre><code class="r">var(means1kx40)
-</code></pre>
-
-<pre><code>## [1] 0.5938206
-</code></pre>
-
-<p>The value here is 0.594, which is pretty close to the expected 0.625. 
-Another way to check that the distribution is normal is to evaluate the probability of a variable lying within a certain range of the mean. For a normal distribution, 68% of the values should lie within one standard deviation of the mean. For our sample of exponential means, this information is summarised in the table below</p>
+<p>Another way to check that the distribution of the sample means is approximately normal is to evaluate the probability of a variable lying within a certain range of the mean. For a normal distribution, 68% of the values should lie within one standard deviation of the mean. For our sample of exponential means, this information is summarised in the table below</p>
 
 <table><thead>
 <tr>
 <th>X</th>
 <th>Area within \(X\sigma\) of mean for a normal distribution</th>
-<th>fraction within \(X\sigma\) for sample of means</th>
+<th>fraction within \(X\sigma/\sqrt{40}\) for sample of means</th>
 </tr>
 </thead><tbody>
 <tr>
@@ -347,6 +277,50 @@ Another way to check that the distribution is normal is to evaluate the probabil
 </tr>
 </tbody></table>
 
+<p>There is good agreement between the proportions of sample means and the probabilities from the normal distribution. Histograms are plotted for the exponential sample and the means of 1000 exponential samples in the appendix. The sample means have a distribution that appears to be normal.</p>
+
+<h2>Conclusion</h2>
+
+<p>The means of simulated samples of random variables drawn from an exponential distibution are (at least approximately) normally distributed. This is consistent with the central limit theorem.</p>
+
+<p>\newpage</p>
+
+<h2>Appendix</h2>
+
+<p>load packages:</p>
+
+<pre><code class="r">require(ggplot2)
+require(gridExtra)
+</code></pre>
+
+<p>simulate random variable samples</p>
+
+<pre><code class="r">set.seed(5074491)
+samples&lt;-1000
+lambda&lt;-0.2
+samples1k&lt;-rexp(samples,rate=lambda)
+means1kx40&lt;-replicate(samples,mean(rexp(40,rate=lambda)))
+</code></pre>
+
+<p>average of exponential sample means</p>
+
+<pre><code class="r">themean&lt;-mean(means1kx40)
+themean
+</code></pre>
+
+<pre><code>## [1] 5.000418
+</code></pre>
+
+<p>variance of exponential sample means</p>
+
+<pre><code class="r">var(means1kx40)
+</code></pre>
+
+<pre><code>## [1] 0.5938206
+</code></pre>
+
+<p>Distribution of exponential sample means. Count how many sample means lie with in multiples of the standard error of the mean. Use the pnorm function to get the probability for the relevant region of a normal distribution.</p>
+
 <pre><code class="r">sigmas&lt;-c(1,2,3,4)
 fractions&lt;-sapply(sigmas, function(x) { sum((means1kx40 &lt; (themean + x/(lambda*sqrt(40)) )) &amp; (means1kx40 &gt; (themean - x/(lambda*sqrt(40)))))/length(means1kx40)}) 
 round(fractions,digits=3)
@@ -363,34 +337,34 @@ round(normfracs,digits=3)
 <pre><code>## [1] 0.683 0.954 0.997 1.000
 </code></pre>
 
-<pre><code class="r"># plot distributions
+<p>Plot stuff. On the left, a histogram is plotted from the simulated sample of random exponentials, with the exponential distribution function drawn in red (scaled based on the number of samples). On the right, a histogram is plotted from the means of each sample of 40 random exponentials. For the right hand plot, the curve in red shows a normal distribution function. In both plots, the theoretical curve in red agrees well with the histogram of the simulated quantities.</p>
+
+<pre><code class="r"># scale the &#39;d&#39; functions so that they appear in proportion with the histograms
+# scale factor is 1000 (samples) multiplied by binwidth (0.2)
 dnormscale&lt;-function(x,scale=1.0,...) { scale*dnorm(x,...)}
 dexpscale&lt;-function(x,scale=1.0,...) { scale*dexp(x,...)}
 df&lt;-data.frame(samples1k,means1kx40)
-hist_exp&lt;-ggplot(data=df,aes(x=samples1k)) + geom_histogram(binwidth=0.2,aes(fill=..count..)) +labs(title=&#39;distribution of 1000 random exponential variables&#39;,x=&#39;value&#39;,y=&#39;count&#39;) +
-scale_fill_gradientn(colours=c(&#39;blue&#39;,&#39;purple&#39;)) + stat_function(fun=dexpscale,colour=&#39;red&#39;,args=list(scale=samples*0.2,rate=lambda))+ guides(fill=F)
+hist_exp&lt;-ggplot(data=df,aes(x=samples1k)) + 
+geom_histogram(binwidth=0.2,aes(fill=..count..)) +
+labs(title=&#39;distribution of 1000 random exponential variables&#39;,
+    x=&#39;value&#39;,y=&#39;count&#39;) +
+scale_fill_gradientn(colours=c(&#39;blue&#39;,&#39;purple&#39;)) +
+stat_function(fun=dexpscale,colour=&#39;red&#39;,args=list(scale=samples*0.2,rate=lambda))+
+ guides(fill=F)
 
-hist_expMean&lt;-ggplot(data=df,aes(x=means1kx40)) + geom_histogram(binwidth=0.2,aes(fill=..count..)) +
-labs(title=&#39;distribution of 1000 sample means of 40 random exponential variables&#39;,x=&#39;value&#39;,y=&#39;count&#39;) +scale_fill_gradientn(colours=c(&#39;blue&#39;,&#39;purple&#39;)) +  guides(fill=F)+
-stat_function(fun=dnormscale,colour=&#39;red&#39;,args=list(scale=0.2*samples,mean=1/lambda,sd=1/(lambda*sqrt(40))))
+hist_expMean&lt;-ggplot(data=df,aes(x=means1kx40)) + 
+geom_histogram(binwidth=0.2,aes(fill=..count..)) +
+labs(title=&#39;distribution of 1000 sample means of 40 random exponential variables&#39;,
+    x=&#39;value&#39;,y=&#39;count&#39;) +
+scale_fill_gradientn(colours=c(&#39;blue&#39;,&#39;purple&#39;)) +
+guides(fill=F)+
+stat_function(fun=dnormscale,colour=&#39;red&#39;,
+    args=list(scale=0.2*samples,mean=1/lambda,sd=1/(lambda*sqrt(40))))
 
-#hist_exp
 grid.arrange(hist_exp,hist_expMean,nrow=1)
 </code></pre>
 
 <p><img src="data:image/png;base64,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c1NK/d+qALm5uU1NTf4l+Q5PDXGcfYilQqQeWert7VV/3blzZ2lpaegTB65QfVlWr159zz33PPvss5s2bXrjjTdsNptvhoCnE/S9CP955eTknHTSSUe+V1dX9+yzzwLAvn37nnnmmdmzZ995552+mY8cOeJ2u9WfGxoacnNzQ387BtvQwDmDWr169YieV6TgR8Angh+BoK/bEJ+FoQ3cLX0PDbHXhSjoGkL/2A67hwz9vsQo6K+44op33333tdde6+7ufvnllz/99FP/Rz/88MOzzz57586doigmJyeLouj7y9bd3T3Eavv6+m677baOjo4vvvjioYceWrhwYXp6utvtfvXVV71e7zPPPOP/Ny1gVRdccEF1dfVf/vKX7u7ujz766JVXXvnpT3867BPRtpS/KVOmlJeXP/jggx6P51//+tfmzZuvvPLK0CcOttpDhw4JgsDz/N69e++7777Dhw+rgxYGzhn0vQj/ec2dO7exsXHFihU9PT1btmyZOHHiRx99pCjKddddd9ttt/3f//3f22+//fHHH6sz9/b23nHHHR0dHRs3bvzjH/945ZVXhl5A0A0NUVjA+z6wzRsb+BHwieBHIOjrFvpnIcDA3dL30Ej3uoGCriH0UofYQ1TDvC+D9alF3JtvvlleXp6cnHzhhRfee++9/h2Ubrf7+uuvT09Pt1gsU6dO9fX0/eY3v0lOTv773//uP07Av4Py3HPPvf322zMzM8eMGfPQQw+phwcfeeQRp9OZm5t7++23X3311WoHZdBVbdiwYdq0aTabraysTD3iFDA24+KLLw7ooAy6FB1JByWldN++fXPmzElLS6uqqlq7du1IJ/r4V9vb23vJJZfYbLbCwsLly5ffe++9mZmZarNx4NMZ+F4EfV5qt6PaFz/Yz/62bNly2mmn2Wy2goKChx9+WFGUxx9//OSTT1YLePXVV8eMGdPT07Nq1aqysrLf/OY3mZmZOTk5//3f/z3St2Pghgabc+D77uvRjj38CPh+jdRHIOjrFvSzoH6zGWJnDrpb+o+6GbjX+VcSyodl4BpC/9gOtoeE+L4QilevRLH14Ycf3n777fo5dwkhMPpuiZdAQAghg8OgRwghg8OuG4QQMjhs0SOEkMFh0COEkMFh0COEkMFh0COEkMFh0COEkMFh0COEkMHF6Ep+bW1tgz1ktVoJIb7rFmnDcZwoiv39/eGsRBRFq9U69KVFQmG1Wn3XmdKGEJKent7R0RHm4NfwKwGAlJSUvr4+r9cbzkrMZrN6e41wVmKz2SilGp5R0Kt+xtgQHwGfcPZAk8kky7IsyxqWTU9P7+rq0vbuaN7H7Ha7LMu+i4jFZqPhvMJms1mSpBi/woQQi8US/j4fo6AfNrAiMpw/zJVQSgmJwIkFEVxJmOuJVCWgjzcIIvSMmAil7PD3QG3LhrmzsSo4xhv1XVJGw7Icx7F6hb8rIMzlEUII6RwGPUIIGRwGPUIIGRwGPUIIGRwGPUIIGRwGPUIIGRwGPUIIGRwGPUIIGVyMTphCyDCWLVt22223qecrLl++vLe31+Fw3HbbbTzPP/nkky0tLWVlZddddx3rMhE6AVv0CIWqp6fnjjvu2Lhxo/rrJ598UllZ+cgjjxQUFKxfv37jxo2ZmZnLly9vbm5ubm5mWypC/jDoEQpVUlLSsmXLqqqq1F8LCwvPOussdToA1NbWjhs3DgBKSkpqa2sZ1olQAOy6QShUhBCTycTzvPpreXk5pXT9+vUbNmxYsmRJTU2N0+kEAKfT6XK51Hkuvvjiffv2jRo16oMPPghxK+pKYiwjI0PzsjabTfOydrtd24JWq1XzRg3/Cg+8RiQGPUIaUUpfeumlrq6uJUuWJCUl2e32tra2kpKS1tZWX5SsXLlSlmWO40K8eqXNZuvq6tJQjNlslmVZkiQNy2ZkZHR2dmq7eqXNZtN26dmkpCRJkrRdvdJut/v+lI6IyWSyWq2aX2HNV690OBwdHR3arl5ptVo1vMIBfxsw6BHS6LPPPuN5fvHixeqvpaWlTU1NM2fObGpqmjVrljrR12INJdHUixTG/tqKvsVjvCCE92Q1L5ggr7A/DHqENNq5c+e2bdu2bNkCAPPnz589e/amTZuWLl1aUFCQl5fHujqETgg36Pfs2fPuu+/ecccdsizj2DKUCJYsWaL+sGjRooCHfK17hHQlrFE3lNKXX35Z/RnHliGEkD6F1aL/7LPPSktLjx07BgC1tbXl5eXw/diy3NxcANixY4fb7RZFsaioaLCVqGMYRFEMpxKe53meD3MlgiAQQsJcCXx/X8MwVwIAoiiG2TcXkUoIIeG/tuq7zHFhNSzUxUdaSZj3L0TIALQHvcfjWbdu3Y033vjqq68CgMvlGji27NVXXz18+HB6evpjjz022Hr4Tz4Bl4ufN09zJQBACAk/owkhHMdpHu/lw3GcbwReOMIZtRbBSjiOs1gs4f/JCf+Ykhr0I31G2sZ1oDD9a1rwD+O8TWHdfBhpoz3o33nnnfPPP9/3qQs6tuyhhx5Sf2htbR1sPSlbtvC7dnWeeqrmSgBAbXKG+ZEWRdFut3d2doazEghj7JcPIcThcHR1dYWZjOFXAgBpaWm9vb0ejyeclVgsFq/Xq21omo/6N1jDM1JPaEIoYWkP+oMHD+7evbu/v7+5uflf//pX0LFlIUlNBU3DWhFCCIVCe9DfeuutAHDs2LGXX3553rx5kiRpG1tGU1JId7fmMhBCCA0t3OGVo0aNuuOOOwBAEASNY8uwRY8QQtHE/qJm2KJHCKGo0kXQY4seIYSih33QQ2oqtugRQih62Ac9TUkBj4f097MuBCGEjIl90IPFAmYzNuoRQihKdBD06vFY7KZHCKHo0EXQYzc9QghFjy6CHkdYIoRQ9Ogi6CE1levpYV0EQggZky6CHlv0CCEUPboIeuyjRwih6NFF0GOLHiGEokcXQY8teoQQih5dBD226BFCKHr0EvQ46gYhhKJEF0GPXTcIIRQ9ugh6mppKuroGu5swQgihcOgi6LFFjxBC0aOLoMeDsQghFD26CHq8BAJCCEWPLoKepqSA18tTN+tCEELIgHQR9GA2U5PJpOAl6RFCKPL0EfQANCXFpGA3PUIIRZ6Ogl7EoEcIoSjQUdBjix4hhKJBN0Gfmop99AghFA16CXolOdm/6+afU/EsWYQQigy9BD1NSTFR7LpBCKHI01HQ48FYhBCKBt0EfWqqWelkXQVCCBmQboI+LQ0PxiKEUDToJeiVlBSTjC16hBCKPL0EPbboEUIoSnQT9KmpJuyjRwihKNBL0CsY9AghFB16CXo8MxYhhKJEN0GflibQPuLxsC4EIYSMRjdBb7XKxEy6sFGPEEIRppegBwAvl4JBjxBCEaejoPdwqaQTj8cihFCECawLOMHDpZm68XI3yJjsdvuw83Acx3FcKHMOxPM8pVRRFA3LEkJsNhulVMOyoigSQoI9Evx4m+/ZiaLI8zzHaWlriqKo+VXieV7zsqIoanuVAEDzKywIwkgL9nq9gSvRsOEo8XCpZuy6QQblcrmGnUfNvlDmHMhsNsuyLEmShmUtFktvb6+2PxI2m623tzfYI8GvNO57doQQWZb7+vo0bNRut2t7lUwmk9Vq1fwKS5Iky7KGZa1Wq7ZXmBCiLqtho/501HXTz6Vh1w1CCEWcjoLew6XiwViEEIo4XQV9God99AghFGm6CnocdYMQQpEXo4OxQxw1FkXxf4t6r661e7jUQ2/1ZD+rzukZ0YFmQoh6PD2cIsMZ8+BP85CAADabTQ+VcBxnsVhEMay7+AqCIAiC5hELKrWG8EcgIJRoYhT0QxzmVuPM5XJ5uFSz0vn9nOKIjoyrI5/cbnc4RYYz5sGf5iEBPr5D7WEmY/iVAID6wnrCuzqFxWLxer3aRiz4qBEf/jNCKNHoqusGL0mPEEKRp6ugTzVj0COEUKTpKOj7uTS8JD1CCEWczs6MVbqOUwrBz6hGCMW9Nyabv/9RPUj+3a+Xb+tnUk+C0FGL3sOlElAIHmpDCKGI0lHQUyJ4iR2H0iOEUGTpqOsGAPq5VK67W8ullRBCcSJJPnhSzxMF/aspcLW2K761/6KfS2VdlMHpqEUPAB68rhlChpYu7bm4ZS4PnrVpT3+W+lCWZ+P81vPNOAojyvTWok+z43XNEDIou9Q8r+W8rcm3bE36tTplv2XOnI5FF7YtIK5/0EicT46C0luLPpULFvRvTjEPnIgQii8z22/bY7vUl/IAQIFbk/60m0u3PfIIw8IMT19B38+l4ZWKETKksa630z07N6b8LmA6Bf7T1MctL70kVFczKSwR6C3o00lHB+sqEEIRxlP39Pa7v3I85iVB+me6hbF9N99sv+ee2BeWIPQW9GkcHoxFyHCKj7/eI4w5aJ072Ax9v/41X1srbtwYy6oSh94OxqaTzhrWVSCEQvVCiew7u9Vfisl/mDQd3/2Xb9LvHWI91Gx2X3+95dlnvTNmRLpGpLsWPXbdIGQ0Bb0fEJAO2M4bejb39deb1qzh9++PTVUJRV9B7+bSsesGIYOp6H5md8rNdLi0URyO/gULLC+8EJuqEoq+gh5b9AgZjF066Ozf3GS/NJSZ3QsXml9/HfCmYJGmu6DHFj1CRlLoevOg7RwPlxLKzNKkSTQz07R+fbSrSjR6C/o00tUFCl7tBiGDKHL9rdF+Wejz9y9YYP7HP6JXT2LSV9B7uFQghHR3sy4EIRQB6Z5ddunQIeuc0Bfpv+QS0wcfkPDu/4wC6CvoKXA0JQV7bxAyhkLXm3vtC2QygkuYyGPHysXFptWro1dVAtJX0AOAkpaGx2MRMob83lX7bfNGulT/ggWm996LRj0JS3dBT9PxeCxCRpAkHUiS9h+xnD7SBT1z55o++QQkKRpVJSbdBb2SmooteoQMIL/3g0PWM2ViGemCcmmpkpYmbt4cjaoSk+6Cnqan471HEDKAvL5/H7Seo21Z75w5pjVrIltPItNj0GPXDULxTqC9o92fN9vO1ra4Z84cEY/HRo7ugl5Jw7sJIhT3svs+6RTLe/lsbYt7Tz+db2zkDh2KbFUJS3dBT3HUDULxL9u9/pD1TM2LU4vFe+qpprVrI1hSItNd0CtpeEl6hOJetvvTI5bZ4azBe/rp4mefRaqeBKe7oKfpP7iu2etVeLdYhOKMVWlJ9jYes4R1ZXnvqadi0EeK/oIeW/QIxbm8/g1t5ikSsYWzEmnCBNLfzzc0RKqqRKa7oMeDsQjFuzzPhsOWH4W7Fp73zpwpfv55JCpKdLoLepqezuHBWITiWW7/eg0nxA7knTULgz4idBf0SloaeDwC7WVdCEJIC7t8JFk+2GKeGv6qvKedhkEfEboLejCZqN1ulrFRj1BcyvZ8eUycouHKBwNJlZWkv5+vrw9/VQlOf0EPQNPSzAoGPUJxKduz8bBpZmTWxXHeadPEr7+OzNoSmB6DXklLMyl4PBahuJTt3XjYND1Sa5OmTRM2bYrU2hKWHoOepqdjix6heCTQPqd355HIBb136lS8jGX49Bj0Snq6WWlnXQVCaMRGebf28Pl9nDNSK5ROPplvaMAh12HSS9D/ddKJQzd71mRa5DaGxSCEtMn2RLLfBgCozSaVlgpbt0ZwnQlIL0Hvr49zYIseoXiU5fn6iBjJoAcAado07L0Jk8C6gCDcXEa68i3rKhAaRm9v78MPP+x2uwsLC2+88UZFUZ588smWlpaysrLrrruOdXVsZHk2bUy+J7Lr9E6dan7rrciuM9HosUXv5jIsMrbokd69//77U6dOXb58eUdHR11d3caNGzMzM5cvX97c3Nzc3My6OgZS5P0idbWJFZFdrTR1qvjNN6AokV1tQtFjix67blBcOHjw4Pz58wGgoqKioaHhyJEj5eXlAFBSUlJbW5ubmwsAjY2N/f39oig6ncMfn+R5nhAiCFo+lTzPa1jKRxAEJewkHeX5pkWsoqClkqGedWkpcJx53z65pESdwHGc5lcpnFeYUkoI0bCsujjHjbhhTQjR8GQHvpV6DHo357DIbR7WZSA0tPz8/M2bN+fn52/ZsqWqqsrlcqlp7nQ6XS6XOs8jjzzS3NzscDhWrFgx7AoJIYSQ5ORkDcWoAUQp1bas3W7XsCAAAJy4Wslo7zdHTSdpW8vz5WLQ6f/VbAEAOPlke00NPem7lWsOelavMAAkJSVpW5DjOFEM/uIMxu12B0zRZdCTDLPSjkGPdO6CCy54+umnlyxZYrVa09LSurq62traSkpKWltbfe33p59+Wv2htbV12BWKomi32zs1DSU0m82yLEuSpGFZh8PR1dWltUV/4o4Ro7xbd9mu1bSSQXV0dACAvbISvvjCdd556kS73e77UzoiJpPJarV2dXVpWNZsNkuSJMuyhmWdTqe2V5gQYrVae3tHfO2vgL/c2oO+u7v7D3/4Q39/f3Fx8aJFiyJ4JKqPc5iULpBlCO/bKEJRtX///vPPP7+0tPSPf/zjpEmTzGZzU1PTzJkzm5qaZs2axbq62KOZ3m1HxSejsWqpqsry3HPRWHOC0H4w9uOPPz799NMfffTRtra2ffv2RfBIVD+XQgnPafqri1DM5OTkvPHGG0uWLBk/frzT6ZwxY8bRo0eXLl2anZ2dl5fHurpYS5fqCdAuoTAaK5cmTxa2bwdNrWkE4bToJ02alJmZKcuyoigmk6m2tnbgkaijR49KksTzvNk86B0BAw5Q8DwPQDxcmtDZKWdmfj9lmGNNHMdxHBfm8Sj1QE2YKwGAiKwEvj/4o4dKwn9t1TcozDLUTtKRVhL+McbBJCUl/e53v/P9KgjC4sWLo7Qt/Rvl3XpUPBlA47HKocn5+dRm4+vq5PLyaKzf8LQH/bhx49xu96JFi3JycrKysoIeibrjjjsOHjzodDrfeOONwdZDCAE40SGflpYG4HJzjlSPB9LSAI6nnfh3GFarVfPT8RUTyoaGNcQfttClpqbqoZLwjtSdEJF3B0b+jPr6+sLcLgrFKM83R0WNR2JDIVVVCdu2YdBroz3oe3p6kpKSnn322RdeeOHLL7+02+0Dj0StXLlS/WGII1E22w9uLNnW1gZg6efSe/bu9ZSXA5jb2tq+/3dQPM+LojjwWPOIhHMozJ/mI0U+hBCHw9He3h5miz78SgAgLS2tt7fX4wnr6LjFYvF6vdoOZPmof280PKOAfQxFwyjvtm1Ji6K3fqmqSti+vf8nP4neJgxMe9CvXLnytNNOq6qqEgRBkqTS0tIIHonq5zPs7TiUHiG9eHFC8C9kFl7tGaNO77etYlX0CpAmT7Y99VT01m9s2oN+wYIFjz76qCAIDofjyiuvJIRs2rRp6dKlBQUF4R+JcnMOgkGPUJxIlZqAkC5+TPQ2IU2axO/aBYoCYR/sSUDagz43N/exxx7znxLBI1H9XAbeIhyheJHp3d4iVkXpSKxKycujFgvf2CiPGxe9rRiVTv829vMZZMhOeYSQfmR6v20RJkZ7K/L48cLOndHeiiHpNOjdnANb9AjFC6e0o1WMetBLEyYIu3ZFeyuGpNOgxxY9QnEk0/ttizgp2luRKit5bNFrotOgd3Pp2KJHKC5YlVaL0tYhlEV7Q/LEidh1o41Og74fR90gFCcyvTvahXKZmKK9IamkhGtv51paor0h49Fr0PMZXGcnhHe6EEIoBjK921uj328DAGAySaWlPHbTj5xeg55LB0UheF0zhHTP4d3VKk6IzbbkCROw90YDnQY9BY6mpWE3PUL655B2twqVsdkWDrzRRqdBDwBKejp20yOkcxz1pkt72sRYBX15OXbdaKDjoM/I4HCEJUL6li7t6Sfpfdzwd8SNCHn8eKG+HsK7xF4C0m/QU6cTgx4hnXNIu1tj1ZwHACUzU0lN5RoaYrZFY9Bv0CsOBwnhNpsIIYac3l0x67dRyRUVBI/HjpB+gx5b9Ajpn0Pa1RarI7Eqqbycw276EdJv0CsOBwY9Qjrn9O6KZdcNAMjjxxMM+hHSddBj1w1Cemam3Tb5SIdQGsuNShUV2KIfKf0GPXbdIKRzmdKuLqFIIuHeDXhE5PJycuAA6emJ5UbjnX6DHlv0COmcU9rVLlTEeKPUbqcFBXxNTYy3G9d0HfTYokdIzxxSdZsY66AHAKWyUsCgHwn9Bj11Oklvr0D7WBeCEArOKVW3C+Wx3y6trMQW/YjoOOjNZmq3WxVs1COkU05WLfrycmHPnthvN37pN+gBQHE6rQp20yOkR1alzaJ0dvHFsd80rajga2tjv934peugp06nBYMeIV1yStUdQnEM7jcykFJayh07Rjo7Y7/pOKXroFccDmzRI6RPTqm6lUUHPQCAxSKPGSPU1bHZehzSe9DbZLxtGEJ65JCr2/jxrLYul5Vh703odB30FPvoEdIrp1TdGvNB9D4SBv1I6DroFYcD++gR0ieHVN3GqusGQC4rEzDoQ6b3oMcWPUI6ZFXaLEpXB4shNyrsuhkRXQc9dt0gpE9OqbpDKGIy5EYll5RwR4+Sri5WBcQXgXUBQ1Fb9F7WZSCEAmTItW18GcMCnp6S8UsY+97U/QeFGb6Ji6p7GZakZ7pv0cvYokdId5xSTRu7I3YJVt4AACAASURBVLGqVr7MKWHvTUh0HfSKw2GiPQRvBIyQzmRItW0CyxY9qEEvY9CHRNdBT202iVgJXsMSIZ1xyOyDvg2DPmS6DnoA6OOcHF6VHiE9MVFXknykgx/HtowWAYM+VPoP+kwMeoR0JUOq6ebzvMTOtow2vixN3odXMg+F3oO+lx9Fjh1jXQVC6ASHXNvOut8GANwk1cVlOuQG1oXEAV0PrwSAXm5UZgte7gYhHXFIsRtb+XS5LdhkSggAQCtf5pBrjwoTYlNM/NJdi/7Zih+8r73cKK6lZeB0hBArDh0MuVHhwJsQ6S7oA/Tx3wU9QkgnHFINw6vc+GsVypwy3mpqeHoP+l4uE4MeIf3gqSdV3tvOl7IuBACglS93ynjz2OHpPej7uEw8GIuQfqTJjW4urY/LYF0IAEArX+qQ6wjIrAvRO70HfS8/CodXIqQfGfKedr6EdRXf6eFyZBDT5P2sC9G7OBh1w7W0kWwZgGddC0LaEXWYSAjzhDJn0GVVGpb1LR7KnA5pjx7GVvq08yUOua6DL4QQXrpwXqWYvcIBS4HWXcKf3oPezaUDx1mUDoDRrGtBSDuLxTLsPDzPcxwXypwDCYLA87wgaPxEm81mSmkoc6bLda0CszsIDtTKlzrkPfUwF0J4kXmeJ4SE8woriqKlypG8wv4IIYIgjLRgSZICpug96AGI4nBY5WMY9Ciu9fUNfwKnKIqCIIQy50Bms1mW5YGf8FDYbDa32z1chFnV/2VIdXvMCzRsJUra+FKH/N1dwod96UwmE8/zml9hSZJkWcvxALvdHsIrHAQhxGq1aivYn9776AFAycy0Kng8FiFdyJD3tAu6GHKjauNLcCj9sOIj6G0yjrBEiD27ckykvV38GNaFnNDKl/la9GgwMeq6sdsHvf6RKIoAQb5vfr+IxOfkWL85Btx3Ux7Jp7cfCDw0QQjheZ7nwzpgy3Ecx3FDlBoiURTDXwkA2GzhngwckUrUXmNRFMNZiSAIgiBo6KP0p9Yw0mfk9eI9yiImQ9rTyRcpeurybeeL7UqLhXa5SSrrWvQrRm+Yy+Ua7KHB4uz7Rcye9HSrfAwE3xTbwLXxPC+KotvtDqdIURR5nh+i1BDZ7fYwV6J2zPX29oaZjOFXAgDqC+sJ7/YvFovF6/Vq69/0USM+/GeENMuQ97Tp41QpH4lYuvj8DLnukDCVdS36FQ9dN06nDfvoEdKBDKlOVx30qla+1Im9N0OKh6DPzLRiHz1COpAh7+nQzdlSPm18qQOveDOkOAl6bNEjpAPpUl27oLugb8WgH04cBD0dNQpH3SDEHE89qfJ+/Vz/wKeNL3VIGPRDiYOgVzIzrUoLQFiHJRFCYUqTm9xcmptLZ11IoDa+xKE04KXNhhAPQZ+RQahkoV2sC0Eooenqcmb+jnNZEphS5QOsC9GvOAh64Hk370xSjrKuA6GEliHVdehvyI2qnR/nkOtZV6Ff8RD0AC4uK0k5wroKhBJaulzfzo9jXUVwbXwJHo8dQnwEfS8/GoMeIbbSpboOQc9Bjy36QcVL0GOLHiHGMuQ6ndxBcKB2flwGnjM1OAx6hNDwLEqnVeno5MeyLiQ4/4sVo4HiJOg57LpBiKUMeU8nP0YmZtaFBNfKl6QozSTs67YbVZwEPT86STnMugqEEle6XN+hv3NifbzEfpwbzTc1sS5Ep+Il6LHrBiGWMqR6fQ6i92njS/h6PB4bXHwEPQ6vRIitdFm/Q25UbXwpBv1g4iPoe/nRZtpDentZF4JQgsqQ6nTeom/ni/nGRtZV6FR8BL1MLG6Syh3Da1gixAKlaXJjB1/Muo6hYIt+CPER9ABwnMvijuJVEBBigGtuBiA9fC7rQobSzhfzDQ2sq9CpuAp6bNEjxALf0NDBFwME3qtZVzr4QuJyce3trAvRI10H/ZOldt+/2KJHiBW+oUHnR2IBQAFBLijARn1Qug56fxj0CLHCNzbq/EisSi7G3pvg4inoyREcYYkQA3xDQ4eg6yOxKrm4mMOgDyaegh5b9AgxwTc0dOj1AsX+5KIibNEHhUGPEBqSx8MfOIBdN3ENgx4hNBR+3z4lJUWHt4odSC4u5hsbQVFYF6I7cRX0HR3g9bIuBKHEwjc0yMVx0EEPAEp2NnAcdxgvgBgoboK+n6RQqxUb9QjFGN/YqMRJ0AMhclERnh87UNwEPQAoWVn4txqhGIujFj2ox2PxijcDxFXQZ2fzOMISodjiGxvjKejxeGwwcRb02KJHKMb4hga5qIh1FaHCFn1QGPQIoUGR3l7u6FG5sJB1IaHCFn1QGPQIoUHxjY1KVha12VgXEiqluJjfvx+H5wWIp6CX8WAsQrEVX0diAUDJyKDJyfz+/awL0Zd4Cnps0SMUY/F1JFaF3fQDYdAjhAbFNzbG0ZFYFXbTDxRXQT96NPF6LbSTdSEIJYr4GnKjwhb9QMGDfuHChf6//vSnP41JMcPhecXpTFEOsa4DGZBO93nW4q6PHrBFH4wQ8PtTTz311FNP7du37/PPP1enSJLkdDpjXlhwSnZ2cuMhgLGsC0HGofN9niHS2Um6uuSCAtaFjMx3lzZDfgKD/oYbbrjqqqt+/vOfP/fcc76JycnJsa1qUEp2dnI9tuhRJOl8n2eIb2iQ8/PBZGJdyMjIRUXcoUOkr49araxr0YvAoLdYLBaL5fnnn1+9enVfX59v+lVXXRXbwoJ4ZFzSkouzkwd03TwyLunOpr6giyA0LD3v82zFY78NAFC7XRk1it+7V6qoYF2LXgQGveraa6/t7OysqqryTdHJTq9kZ2MfPYoG3e7zDMXjkBuVeqspDHqf4EFfXV29a9cunudjXM2w5KysZOUb1lUgA9LtPs8Q39DgnTmTdRVayMXFHF6s2E/wUTfTpk1r1OXRDCU7SNcNQuHT7T7PUDyeLaXCEZYBgrfoZVmuqKiYOnVqVlaWOuWdd96JYVWDUoMe++NRxGnY5ymlL774YnV1dX5+/q9//WtZlp988smWlpaysrLrrrsu6hVHXzzdcuSH5KIi04cfsq5CR4IH/c0333zzzTfHuJRQKLm5dqXV7XZTi4V1LchQNOzzO3fu7O7ufvjhh//0pz8dPHhw//79mZmZt95667Jly5qbm3Nzc6NUamxwR4+CxyPn5LAuRAscSh8geNB3dur07FNqt7tJCnf4cBxdNxXFBQ37/Pbt2ydMmAAAN910EwCsXr26vLwcAEpKSmpra9WgX716dU9Pj9VqPf3004ddIc/zHMdZNDViBEHgeV4Qgn+ih2U2mymlPyjmwAFaXGyx27WtkIkTL115OdfRYe3vp6mp/jMIghDmK6xovfP4wFc4FIQQQRBGWrAkSQFTgu8Wvi+thw8fXrdu3VVXXXX++ecHzNPX17d8+fLe3l6Hw3HbbbfxPB+b761dXL6luRmDHkVWKPt8gK6urtbW1rVr12ZlZd10000ul0s9zcrpdLpcLnWeHTt2tLS0pKamnnXWWcPWwHEcIUQURQ318zxPKdUWQ+pGA4O+qQlKS/2KCcwOHTpRrSjS/Hxx7146dar/DGG+woqiaAhrX23agp7n+ZEWPHBDwYP++eef9/186NChoF9pP/nkk8rKyssvv/yvf/3r+vXrbTZbbL63dvN5toMHo7RylLBC2ecDmM3m0aNH33LLLStXrlyzZo3dbm9rayspKWltbfWdWHvbbbepP7S2tg67QlEU7XZ7T0+PhvrNZrMsywObcqEwmUzHjx8P+CNh370bCgpcJ4qJg5OP/F+61MLC/p07+8vK/GcwmUxWq1XzKyxJkizL2pYd+AqHghBitVp7e3tHumDAGX/Df9HLzMzcvXv3wOmFhYUOhwMAkpKSAKC2tnbg91aXyyXLsvpXdLD1D/ZQ0OmEkG4uP/fQoYBHyfeGfTpDUBcPcyW+YoxRif+qwq8kIsVE6hkNYbB9PkBxcXFvby8hJCkpiVJaWlra1NQ0c+bMpqamWbNmRbvIaOMbGz1nn826Cu2wm95f8KD373vZtm3bjBkzBs5TXl5OKV2/fv2GDRuWLFlSU1Mz8HvrNddcs2/fvlGjRn3wwQdDlhHkdjAOhwMgcHyNw+HYzuXZ2pptDoffZPeyMZaHuyz2SPQnOn6wZo20dQIGyMjI0EklKSkp4a8kUqwjPK89xNZQKPt8gFNPPfXxxx//9NNPU1JSbr/9dkEQNm3atHTp0oKCgry8vBEVqUN8Q4N8002sq9BOLioStmxhXYVeBA/6n/zkJ76fr7vuulNOOWXgPJTSl156qaura8mSJUlJSUG/t7711lvqD0N8b7UNcpey1tZWgMDgbm1t7ebyPPWfdv9ghUkAcPz4cbfbPdhWQqF+cQ7/QLTdbvf9qdOGEOJwONra2jR3CEaqEgBIS0vr7e31eDzhrMRisXi9Xm1fe33UP+QantFg+5i/UPb5ACaT6c477/Sfsnjx4pHWplOKwu3dG6eD6FVyUZH5739nXYVeBD9h6pxzzpFled26dWvWrHG5XKZgVzX67LPPeJ5fvHix2nWjfm8FgKamptLS0uhV3M3l8ofwnCkUYaHs84mDP3gQRFEZNYp1Idph142/4C363/3ud2vWrLn66qsB4IEHHvj666/vv//+gHl27ty5bdu2LVu2AMD8+fNnz54dm++tXXw+hwdjUaSFss8nDi4O7zcSQM7PJ24319KiZGayroW94EH/xhtv7NixQ+0MvfbaaydNmjRwp1+0aFHAlNh8b+3hckhvL+nupnrqOEbxLpR9PnHE6XUrf4Dn5bFj+cZGDHoY4laC/r3DMRjnEDoZTEpmJt/czLoQZDS63edjzwhB//01LFlXoQuDHow966yzrrzySgB49dVXr7jiithWNQwlL49rbga8BimKHJ3v8zHGNzb2X3IJ6yrChbea8gke9A888MCMGTM+/fRTAPjd7343b9682FY1DDknB7vpUWTpfJ+PMcO06E3r1rGuQheCBz0h5PTTTz/33HMlSerq6tLb11glN5fDrhsUUTrf52PpwULzI8cP/vGiSb3kxNmVefY4uARCALm4mPc74TmRBe+jf/7558eMGXP8+PGurq5Jkya9+OKLMS5raEoujrBEEabzfT6WnEpjL0nvJemsCwmXXFzMNTaC1suQGUnwoL///vt37tyZlpY2evTonTt36m34gZKXh103KLJ0vs/H0iil7hhXwrqKCFBGjwZRxG//MFjQW63W0aNHqz+npKRw3KCDc5iQc3K45uYHi5IfLEoefm6EQqDzfT6WRil1LYYIeiBELizEgTcwWB/9pZdeOm/evKuvvprjuJdffvniiy+OcVlDU/Lz+UOHOIusAN7hE0WGzvf5WMqk9S1kHOsqIkM9P9Z7xhmsC2EseNAvXbr07bffXrNmjSzLP/vZzy677LIYlzU0xemkgpBCD3eSuL90FNIJne/zsZSp1FWLcXzdSn84wlI16Kibiy666KKLLopxNaEiRMnPzzi4r5PHoEeRofd9PoYylfoWLi5b9A8UBvblTpMmTPW+lrmMSTk6Eq8dkXJ+foayj3UVCBkNcblS6NFWLu4H0auOkXGZtJ51FezFa9ArBQUZdC/rKhAyGr6hoZPkemD4CzvHhRZuXIayj4R3kW0DiNegl/Py0pX9rKtAyGj4+vpjXBQvMx5j6gkB3N69rAthLF6DXsGuG4SigG9oMMYgep9jXAmOsIzXoJfz8zMoBj1CEcY3NsbpkdjBYNBD/Aa9UlCQphzgIKxb0yGEAvANDQY5W+p7LQSDXsdB//sBI6X8H1IyM2UiptAj2taAEAqKb2w8SozTRw/YogcAPQf9MAjpJPnp2E2PUORwx46Rvr4OroB1IZGEQQ9xHPQA7dwYPB6LUATxDQ1yYaHBrizSwo3j2tpIVxfrQliK56AnY3AoPUIRZIz7jQSQwCzn5ib4hRDiOOg7uAIcSo9QBPGNjcYLevj+0masq2ApjoO+jRvrUPayrgIh4+AbGuSiItZVRB4GfRwHfTsZi0PpEYogvq5OLjHU2EoVBn0cB30bV5yu7Aevl3UhCBmCJPH79hmz62bcOL4+oS9tFsdB7yIZ/SQJbx6LUETw+/dTq1VxOlkXEnnftegpZV0IM3Ec9ADQTsbi5YoQigi+vl4eZ6iLH/goublAKXf4MOtCmImzoF8y9gcnu7ZyRfxwQb9kbHLAUgihgQwc9MBxcmFhIvfexFnQB2jjivh9eDwWoQgwctAnfDd9vAd9IdfUxLoKhIzA4EFfUoJBH69C6bpBCIWCb2iQjDjkRoUt+jjWRjDoEYoA0t3NtbUpRjxbSoVBH8c6uTzi8dhpK+tCEIpvfEODnJtLzWbWhUSLPG4c39wMfX2sC2EjvoNeAV7Ozc1QsJseobBwdXUG7qAHAJqUpGRmcol6abP4DnoAkMeOdSgJ+uYhFCl8fb0hz4n1J5eU8HV1rKtgI+6DXiksxKBHKExGvcqNP7m4mEvUbvq4D3p5zBjsukEoTHx9vfGDvqSE27OHdRVsxH/QFxY65QT9K41QZCgK19Bg/KAvLuaw6yZOyUVFDgWDHqEwNDWByaSMGsW6juj6rkWfkJc2i/ugVwoLbbTdSjtZF4JQ3KqtlUtKgBDWdUSXnJ9PZJkk5KXN4j7oqcnUyeU7lYS+qwBCYampMXy/DQAAx8lFRVBTw7oOBuI+6AGglSvJVBK06w2h8JE9e5RECHoApbSU1NayroIBgwS9E7vpEdKspsbYZ0v5KKWlJCEH3hgi6PliJ7boEdIsQbpuAJSSksQMeoF1ARHQyo07Sfkr6yoQGoooisPOIwgCISSUOQfieZ4QQkZ+QJV0dUF7O1daqm27ccH31EhFBamt1fZMBUEAAI7T2DgWBIGOfMAPIYTjuJEWrChK4NZHumEdUvvo8R7hCI3IrVlWAChWtt8gj7k7P8U3PUkw7ABEpaQEDh4kLhe121nXElNGCPoObgxPvdLRo5CayroWhILzekNqilBKQ5wzAMdxsixLkjSShawAkE1rD5MyDVuMI76XlJjNNDdXqamRJk0a6Uo4jpMkSZZlbTVIkjSwoT0sQoggCNp2CX8xCnr74H8/RVEEGNHe+YMV2u12CqSNK3Ts38/NnDnEbMOuk+M4juNCmXNooiiGvxIAsNlseqiE4ziLxRLm93pBELR9dfWn1jDSZxT+h8TYsmnNYa6cdRUxVF7O19VpCPq4FqOgd7lcgz2kLc5+7eCTBfr9mpNauXFp1dWuiRPvLkhZvr/7+7mSXS4XQPLQBfiIosjzfChzDs1ut4e5EkKI1Wrt7e0NMxnDrwQARFF0u90ejyeclVgsFq/Xq7k1pFIjPvxnhPxlKzXf8AtYVxE7tKyMT7zjsUYYdQMALdw4kqjXpUMoHNm05hBJoBY9LS/HoI9XrXziXpcOIc1EcDvpviOklHUhsUPLy4XEu7SZQYL+KFfOJeQJbwiFYzSt6yGZvSSddSGxQ8vL+cZGSLAjN0YYdQMAx7hybu9eEl4/MkKJJkdJiH6bO/L9x+NZ/yylPFrYfoSUPnygi1lNsWWQFn0vSafp6Ql7Q0iEtMmmNYcTIOgDHCZlOUpiXdrMIEEPAEpZWQJ2vSEUjmxac5irYF1FrB0m5dm0mnUVMWWooE/Ag+kIhSNbScQW/SFSnkOxRR+fMOgRGhEO5NG0PhH66AMc5jDo4xYGPUIj4qR7JTB3kSzWhcRaMxmfrdQSMOwlfQaK+6D/zffH05XSUr6+noDiP3HYpRBKWLl0dzM3nnUVDLSTfADIoAdZFxI7cR/0PjQ3F0TRQfezLgSh+JCtVCdgBz0AUCCHudIcupt1IbFjnKAHQuTi4uwEGzWFkGY5tPoQScQWPQAcIhU5SgINvDFQ0APIpaVZFM+PRSgkObT6UOKNrVQdIhW52KKPU1JZWY6SQG8eQtopSpay5xBJ0KBv5ipzEmkovaGCXi4vz6W7WFeBUBzg9+9XgO8guawLYaOZjM9VdkN4lwGPI4YKeqmiIkfZDSO/jQtCiYavrT3MVVAY8T1mjaGVjCGgcIcOsS4kRgwV9EpenkIEfj8OvEFoGHxtbcL22wAABe4IVyokzCVvDRX0QMghUsFXJ1DXG0LaCHsSt4Ne1UzG8xj0caqZmyBg0CM0HL62NmGH3KgOkQq+JlFGYxsu6EkltugRGoai8Nii5yqx6yZeYYseoWHxBw4Az6tXAkhYzWQ8v2dPggy8MVrQHyQT+IYGAfpZF4KQfvG7d8vl5Qk75EbVSsaALHPNzawLiQWjBb2LZCgORzaeH4vQ4ISaGqk8Ea9y448CJ5eVJUgHgNGCHgDkiopcBU+bQmhQfHW1XJHQHfQqqbw8QQ7pGTDopfHj8+m3rKtASL+wRa+SKyqExBh4Y8SgnzChQNnOugqE9Mrr5RsasEUP2KKPa9LEiQV0G+sqENIpvr5eSUpSnE7WhbAnV1Twe/aAJLEuJOoMGPRySYmZurgjR1gXgpAeCTU1cmUl6yp0QcnKgqQkvqmJdSFRZ8CgB55v5sYLO3eyrgMhPeKxg96PVF6eCN30Bgz6W3JT95Mq4Vs8HotQEEJNjYxB/z25ooLfbfybWBgw6AHgAFfFY9AjFAxfXS2NT9A7CA6ELfo4tp9UYdcNQgMRl4vfvx+H3PjI48cnwsAbYwb9AW4Sf+CAhXazLgQhfeF375bHjKF2O+tC9EIaP57fu5f09rIuJLqMGfT9YJfHjs1RsFGP0A8Iu3djv40/mpQk5+UZ/nrFxgx6AJAmTMhTcDQ9Qj8gVFfLGPQ/JFdWCrsMftEU4wb95MkF8mbWVSCkL/yuXdiiDyCNHy8YfeCNoYNe+YZ1FQjpCaVCdTWeLRVArqzksUUfp6SqqkylnvT0sC4EIb3gDx4Er1cuKGBdiL5IlZXC7t3GvgOJYYOeJiW1cOOEHTtYF4KQXvC7dsmVlcAZ9lOvjTxmDEiSse9AYuS3fD93krAt8HjsL3PTfpmbNnDmoBMRMhKhpkbCEfQDcZxcUWHs47FGDvoD/MkDgx6hhMV/+y0eiQ3K8MdjjRz0+7ipwtatrKtASC+EnTvliRNZV6FHUmUlb+hz6Y0c9M18FX/4sJ22sy4EIfbI8eP8/v0SDrkJRp440diXQTRy0HvBIpWWFihbWBeCEHvCrl3y2LF48YOgpMpK/sAB0m3Yi6YIrAuILunkk8fu+bqaP5t1IciAuru7//CHP/T39xcXFy9atEhRlCeffLKlpaWsrOy6665jXd0JP89JA4D/VBoq6EmP5pwYdJDOK+yK0hdqs8ljxwq7d3tnzmRdS1QYuUUPAN6pUwvljayrQMb08ccfn3766Y8++mhbW9u+ffs2btyYmZm5fPny5ubmZv2N1RtLtzWRKtZV6Jc0YYKBL3kbbtAvW7bM7XYDgCzLjz322N133/3SSy9FoK4IkaZNK1S+JoAtFxR5kyZNmjVrlizLiqKYTKba2tpx48YBQElJSW1tLevqAhVh0A9JmjiRN+5pN9q7bnp6eh544AHfDq02Z2699dZly5Y1Nzfn5uZGqMKwyEVFMgijlVqAPNa1IKMZN26c2+1etGhRTk5OVlaWy+VyOp0A4HQ6XS6XOs8zzzzT3t6enJx84403DrtCjuM4jktKStJQDM/zlFJFCd6m4UHKp9UY9AH8X2pu+nTh3XeHePF5nlcUhWo9gdZut2tbVhAEboTnuHk8nsCVaNiwKikpadmyZb///e/VX2tra8vLy+H75oxOgh4I2ctNL1Q2YtCjiOvp6UlKSnr22WdfeOGFL7/80m63t7W1lZSUtLa2qokPAKNHj7ZarTabTZblEFcb+pz+CCGKogwS9EIerT4O6Z2QpWHNBub/UisTJ5pqauS+PjCZgs485Csc0rY0BD0hhFI60l1i4Ia0Bz0hxGQy8Tyv/hq0OXPNNdccPHjQ6XS+8cYbQ6wHIAIHu+12u91uB/CqvzocDgCPw+H4kp9RJH/lcPz8+xllvxn8ySkpKYSQAdO1sFgs4a8kIyNDD5UQQpKTk8OvJHyEEBj5M+rr64tOObBy5crTTjutqqpKEARJkkpLS5uammbOnNnU1DRr1ix1nh//+MfqD62trcOuUBRFQRC0FWw2m2VZliQp6IOFdNteMknDao3tBy+13W7JyPBu3y5NmBB0ZrPZLEmStj/Ddrvd7XZr+COh7vPh78MRG3UTtDnz8MMPS5LE83xnZ+dgC1qt1ogUcIlZfv5oD8B3o8c6OzsBbJ2dnU3czGnSa34FJPvN4C/Z5XJZrdbusIdYWa3W8N+Y9PT0rq4uzd8TI1hJcnKy2+32er3hrMRsNnu9Xs2tIZW6q4z0GSmKYrPZwtnuYBYsWPDoo48KguBwOK688kpCyKZNm5YuXVpQUJCXp69vkMX0m0YyhXUVeidNnCh8++1gQR/XIhb0QZszo0ePVn8YojkT5offn/8fW/VnWZb38lMzlYbO1laanj7YzL4pGr4lDRT+StQ/49q+60W2EpWiKGGuR/3OG+ZK1FcjIs8oInJzcx977DH/KYsXL2ZVzNCK6ZZ3uVtZV6F30qRJwo4dcMUVrAuJvIgNr5wxY8bRo0eXLl2anZ2tq+aMB+yHuUpxC542hRIUB/JYuqOBnMS6EL2TqqqMenWscFv0S5Ys+W5FgqDb5kw9f+qMr77y/Md/sC4EIQZyaa0HrK0EL0M/DGnyZP7bb8HrBVFkXUuEGfyEKVUDd6rwxResq0CIjWK6pYGczLqKOKBkZ9PUVKGujnUhkZcQQV/Hzxa3bydRG32BkJ4V02+w3yZERu29SYigP06c8tixwma8VzhKRMV0CwZ9iKSqKmH7dtZVRF5CBD0AeE85RfzyS9ZVIBRzMh6JHQEM+vjmnTlT/Oor1lUgFGt8XR0eiQ2dNHkyv3MnhHfWiA4lTNDPmiVs2gQDLgGBkLGJ27bhkdjQKVlZNC1N0N81/trHlgAAHCdJREFU6cKUKEGv5OQoo0c/WvCD4+kLs/GG4MjghC1b9pDprKuIJ9LkycI337CuIsISJegBwDt79iS6lnUVCMWU8M03ddw01lXEE+nkkzHo45h39uwqDHqUSEh/v1BTg103I+I96SQRgz5+eWfPLqVfW6GHdSEIxYiwY4ecnd0Fo1gXEk+kKVP4ujrSY6igSKCgVzIyDpCKcuUz1oUgFCPCN99IJ+HAypGhKSlyYaHBBlkmUNADwHZy1gTsvUEJA4NeG+nkkwVjXQYxsYJ+BzlrkrKGdRUIxQgGvTbek04St25lXUUkJVbQ7yKnZ9O6VHqUdSEIRR3X3s4fOiRNnMi6kPgjnXSSwQbeJFbQu8Fey51SRf/NuhCEok7YvFmqrKQRuoNbQpHGjyedndyhQ6wLiZjECnoA2EbOnaJ8xLoKhKJO3LTJOx1PldJEFKUpU8RNm1jXETGGCvprstKHfWgrd16V8m8OpFBmDn39COmN8PXX0jQ8VUojafp04euvWVcRMYYK+lAcJBW9JKVIMc7faoSC8HqFrVu9GPRaeadOxRZ9fNtGzpmIvTfI0ISdO2lampKTw7qQeOWdNk3YtcswdytKyKDnzp2ofMi6CoSiSNy0yTtjBusq4hjNyJDHjBGMMsgyEYN+J3dmjlLtAOMcUkcogLBpE3bQh8k7bZpolG76RAx6NyTVcGfOoP9kXQhC0SJu2oQd9GGSpk8XjNJNL7AugI2t/AWnSO+shp+zLgShiLnEmaz+kAVNK+Suy8+bLYMAACkcZVpXvPJOm2a//35QFODivkEc909Am63c+RPpp3boZF0IQpE3iW7YRU6RE7UZFylySQnleaGmhnUhEZCgQd9NRjeQKVPwFFlkRBPpZ9+S01hXEf8I8c6cKXzxBes6IiBBgx4AviQXzlCwmx4Z0CS64VuYzboKI5BmzRK//JJ1FRGQyEE/fypdRUZ+u/Ar8PxYpGMZcGQU7K8lU1kXYgTeU04Rv/gCaNwf5EjcoG+G0mOkQFyLl6dHhjKRbqgh0/oBr2UWAdL48USW+fp61oWEK3GDHgA+I5eZ33mHdRUIRdJE+tm3cDrrKoyC47zTp4vx302f0MflN5DLr/zoj8TtphYL61oQiozJsO5p8jjrKuLDpaMzhp3ncjqn5N9blv7mvwDgH61d0S8qKhK6RX+EFMpFReLHH7MuBKHISIejObRxF5nFuhDj2ErOOImuJRDf3fQJHfQA0L9gAfbeIMOYQtfuJjOxgz6C6mAKB3IBVLMuJCwY9AtMq1eTnh7WhSAUAVPoum3kDNZVGAoFbjuZfTKN71EbiR70Sn6+NHmy+f33WReCUARMoeu2whzWVRjNNzDnJFjDuoqwJHrQA0D/ZZeZ33iDdRUIhWs07EuFFhxBH3FbyFmT6accyKwL0Q6DHvovvFDYunUU3cu6EITCcjL9eAc5XQKRdSFGcxBKXZBSBptZF6KdYYP+khAGTqmz0eRkz7nnnqb83xALBkwMceUIxdLJdPUWcjbrKoxpC5lzMo3j3hvDBv2I9F9++Y+UlQY40RklLlk+ia7dRM5hXYcxbYGzp9HVrKvQDoMeAMBzxhk8SML69awLQUgjftMmF6QcgDLWhRjT12RuOXxNuvCEqbjGceu4600vvcS6DoQ0EtasweZ89PRARj1MFuO2LYhB/5213M+Ejz6CY8dYF4KQFvzq1ZvJXNZVGNnX5Bwhbs+ix6D/TgfJls48k1u5knUhCI0Y197O79qFp0pF1UZyrrhmTZweycOgP8Hzs5+R556L69GyKDGJq1fL06e7IJV1IUZWC1OJxxOndxbEoD9BOussMJtnUTxLFsUZ00cfSeedx7oKg6PAec86y/TRR6wL0QKD3g8h9Fe/uoQ+yboOhEaAeDymdesw6GPAe955plWrWFehRUJfj34g5eqri351XxHdAZDPuhZkKFbr8FeU5Hme47hQ5vzBUp99RvPyhIoKraWhUHHz5gk332xrb6e5uSNd1mKx0JH37xNCBEEY6S4hSVLAlBgFvd1uH+whURQBAsuKxnYHq8E33WKxcKK4ilw3n/7Jbn866Gy+mYd+RkM8GjqbzRbmGiJSCcdxFotFFMM6sV4QBEEQNOzo/tQaRvqMvF5vOBuNFLfbPew8oigKghDKnP7s//xn/znnyF4vttuirV8UhVmz6Pvvu6+9dkQL2u32/v5+RVFGukVCiMViGekuMVCM9gyXyzXYQ+HH2XDbTfb7OW2QeQAgze12n2kTc8mvX1HGX5F034qjSeoMF47OMH03m0n9F4Z8Rna7fYhHQ0EIsVqtvb29YSZj+JUAgCiKbrfbM/K7qPuzWCxer1eWwzrQrUZ8+M+IiVDeSnWekb3plJo++qjnuee4+BwNEl8opf3nnmv64IO+a67RsKzmj3OYOQDYRz9QC+StJ5ddjj31KB4I27eDx+M9+WTWhSQKz7nnip9/TuKttYFBH8Sb3O0X0he49nbWhSA0DPN773nOPx94nnUhiULJypInTjT9+9+sCxkZDPogDkLZRjLX8txzrAtBaBimf/6zf/581lUklv4LLzS/9x7rKkYGgz64F8i91uee49raWBeC0KCEbdtIT493xgzWhSSW/gsvFD/+OL7uP4pBH1wjTPCceab1L39hXQhCgzK/957nggtAwME2MaXk5EiTJsVX7w0G/aB6f/tby4svci0trAtBKBhKTe+913/BBazrSESe+fPjq/cGg35QcnGx59xzrY89xroQhIIQN28mHo/31FNZF5KI+i+4QFy3Lo4uT49BPxTXPfdYXn+9EHazLgShQOa//a3/4otxvA0TSna2NH26+d13WRcSKuzdG4qSk+P+2c9+8ef/vpf8g3UtCPnxeMzvvdf19tus60hc7ksvtaxc6b7mGgA4e5Qj6Dyrj+llNIfBW/TnjsoI+vNg8wRMP3dUxnl/XjKJfjGZfjL0zAjFkmn1ajk7Wxo/nnUhictzwQXC7t18QwPrQkJi8KAP33FIfY48cAu9BQZcJwghVix//3v/pZeyriKhUZvNM2+e+c03WRcSEgz64b1HbnCD3bpiBetCEAIA4I4eFdeu7b/sMtaFJDr35ZdbXn8dwruCU2xgH/3wFOCe4P70zCNnO+DaY5DHuhyU6F6d+E45Pf/2yvKA6aO4EV8cEY3Ijxw/uCoigfnv0bseyt4M8J+sSgoRtuhDUgtT+y+99JfKr1gXghIepQvoS2+RG1jXgYACeYssvJTGwbVSMOhD5br33jF097nwGutCUEITP/2UB3kjzGFdCAIAeAeunwkfZ8EB1oUMA4M+VNRme4p7+na6OB2Osq4FJS7rCy+8SW5U8JOrD53gXAfzL6LPsy5kGLi7jMBWMmcNXHy7cgMBvMkDYoBvbBQ3bHgLbmRdCDrhFbL4EnjGDH2sCxkKBv3IPEoey4QDP6b/w7oQlIisK1b0X3ZZJwQ/PQcxsROmHYBx8+BV1oUMBYN+ZDxg+SN5eSG9V9i5k3UtKLGQri7z66/33YCHYXXnVbL4avoYB/od9YRBDwBwxigHAJyanhLKzA2k6nny++Trrrtw1IlXT13DGYOcCT3YFmOMyUZRpFhffNF7yilyaSnrQlCgNXCRCJ5Z8CHrQgaFQa/F2+SX0rRpf6DXwMhv646QBqS31/LMM32LF7MuBAWhAL+S3HYjXca6kEFh0Gt0/NFHR8NB+4MPsi4EJQTLSy/JlZXe6dNZF4KCewcWjoYD02EN60KCw6DXiNpsi8i/zH/7m2XlSta1IIMjbrf16ad7/+u/WBeCBuUB80vkN7+gD7AuJDgMeu2OQU73Sy/Z779fXLeOdS3IyCwrVsjjxnlPO411IWgo/4Ab8qHhFNDjLQYx6MMinXRSz1/+krJw4WT4gnUtyJhIZ6ftz3923XMP60LQMDxgeZbc+1/0NzocfoNBHy7P3LnHly//M12AAy5RNNgef9wze7Y0bRrrQtDw3oaFHMjz4BX11xmjHOp/xRyd5kxXf2ZSGAZ9BPRffvkT5MHUiy6qhM2sa0GGwjc2Wlau7MXmfJxQgP8TWX4zvdcCvaxr+QEM+sh4C25w3XPPM/Q/hS1bWNeCjMN+zz19N9wgFxayLgSFaj2cXweTfk6Xsi7kBzDoI8Z97bUPkUdTL7+cW6PTIVYovpj/+U+huroPB9vEm+XkqUvhLyWwg3UhJ2DQhyqgc83/V9/P/4Sre55+2nTVVY+Nets3MaBjbmAnXcCjg/XiBZ0e8S4/Vn2IKADp7LT/9rfHH3yQ2mysa0EjcxjGrCS33U1/pZ+jshj0EeaZO9fzwQe30CW/pbfjbWaRZkl33eU97TTPf+r91kUoqBfhTgv0LYRHWRfyHQz6yFOmTPkx2XgyfJ56ySVcayvrclD8Mb//vvj558fxvOu4JYF4H/nfX9FlZfAt61oAMOij5CjkXkE+kUtK0s4443RdnkCBdIvfty/p1luP/+lPND2ddS1IuzqY+BS550n6UxscZ10LBn3UeMB8/OGHXcuXP0F/+t/0VtKn6/sSIL3o709euLDvZz/znHkm61JQuJ6H2xuh7A+U/Y1iMOijq/+CC84nW4uhJu1HPxI/+4x1OSgO9F9+ee8dd7CuAkUABXIXeX4CbLkRHmFbCQZ91B2G/OvJB3233pq8cGHyokWj4DDripCOmc19N94IPM+6DhQZ3ZD2c/LuTfQPF8L/MSxDYLjthOL+yU/65861L126mlZwj95sBTzXEQ2jMtMZdPpogrcsjif1UHEzeetZuuAYyf4K2PTIYYs+dmhGxvHHHrucrBc3bvyQjrM+9xzp72ddFEIo6jbCj35D/vcv9OIZ8AmTAjDoY60GJnX97W+3kddN77+fPmWK9U9/SoFO1kUhhKLr3/Dju8jzz9CLTKtXx37r2HUTFvXLddIPv0qPtVnVKf6Pqj/vamlVf84kP+p6772fZdb8v9//8TMYw9956bn/u7gaJiYN+FZemenc1dJamelMItT3s7oe/xqGnjJE8b6Shp1ft+K6eJQ4PoKLeknSEz+94kFY/iL8IsSlml0RuD4atuhZ2ginXQX/nE82UY57F2a/D6f+BFYkQxfruhBCUbEB5s6HNbfBsj/BDWZwx2y7GPTsNUGpa/nyKmheCb84n77xJc1NvvZaeP110tPDujSEUITtgCk/gm9y4cBamF4F38Rmoxj0etEHtr/BNVeRj/+D1HhPOQX+/Of08vKUyy67EZ7k6+tZV4cQipg2cF4Kq16Bhe/BWffBXUkQ9SYdBr3uHIE89003weefd27d6pk/fyZsSDvvvG+g4GF6/RXwIt/YyLpAFGEFmU71v+y01BRR8P3Kui4URQpwz8AtZ8LmCti1Gcquh2f+f3v3HtTUmQUA/NybJyQEMAlqeYy8AiK+ZtcxZaZqcdR/2CqzKzLa6Tpd3Yp2ugyPjtup1s6W1T4sm9Xd1nFahPUf2J1Ra51pXYoMOLXxgYBUiVZSRwONMUUCISHk3m//yG6WRmQ0CfcL6fn9wSR3bu45+XLuSXK5N58UPNMXDht95OKTktxbtvwO/mXv7d0OTX2M7lfwz4Q1a65Dkmrz5tj33pN++eVcuEs7TYRQkPogqxRO74Rjm+HYZdDtgg9V0/MvOjzrZiYQia6A3gTLR4D59tb9X8++f6aoRdzZGVtb+2/y+zGQ3YCFyuoMTqfjsrK4zEwRJHKAl1YiNDO0wNoWWFsIZ8vgL3+Et87AhibY0garx0ESrhBha/QcxxkMBpvNlpOTs3Xr1nBtFgVi2V7Id2+eA5s3A0BBUoKW3J4P1/4654r48mVZY6Oor+8OjN2DtPjfJLPp6SQpiUtN5WfP5ufOjYf5tLOPZrgLoFD42v086NsE//gzVMyGgRZY2wprlihW3oLsR9e3Pc0pxWFr9EajUavVVlRU1NTUWCyW5OTkcG0ZTYED0XeQ8x3kHKhc5V+4Qkvmwe3GLdfkViv7/ffiri52YIC1WtuJjUkWE42GT0riNZrDMHcQ1LEfxvAJCRsgTdrC8ipVFqSxAxxRKIhKRe9pzUi4C6DQfQ8Z78Jb78Jb2WBaC2eK4MSfoNIN8svwyy5Y3AP5X8I6Ozz1NHBha/Qmkyk3NxcAsrOzTSYTVjlFdtDaQTtWnCVWKJxOp395YVJCa4eJtdtZq5Wx27uax2aBnb3fL+rtLYWW2HdtjMNxnIwk6h3M6CgAkLg4EhPDKBQKlSpWKiWxsSQ2lkgkJC4ORCISGwtSKZHJiFwOACQ+HhgGxGKiVAIAYVkSF/ffwDExbFycyOtleB4kEqJQ+FP6yWp+P11npsBdAIXRLci5BTl/gwoH8Avg21/AlcXQ9VuovwpLaTZ6p9Op0WgAQKPR+JvLzp07LRaLWq0+evTo4x7IsixM/9lFAkhMTPT/nXqdqW8DQEJCgv/vpGs+GmXSJSzLSqVS/xIe2PjcXP/do2UiAPjDEQ4ASsWi/oscAOgl7E0HD4TAw4cwPAyjo4zLxQ4NEbcbRkZgdBTGxmB4GLxeZngYOA5GR+HhQ+B5uHEDAGBsDEZHAQA8HvhfGTAjI/+fVdHlAveE60QC7j6BGKUSJD85drkB/p6YuPFx67ufcvtBC3oXQGgKPLDXYOE1WBiwfIpW82jNM4SE55fw6urq5s+fr9frm5qaNBpNYWEhAHR3d7vdbolEkpGR8bgHyuXySTN7KiKRSCQSeTwhnZ8kFovlcvnISKjTwcjl8tCbS3x8vMPhCPHVCUsmSqXS7XZ7Q5v/ViqVchzHcdyTrMw4nTA+/uhymUzGeL1jdnvAcqLVTvENgOf5qd99wyXoXcAvlAqUSCQ8zz/hCAdQqVQjIyM8H8xM1kHXWExMDM/zY0H9rl/QQSUSiVQqnfg196keG/QIB707Mwwjk8me9sk+WvNh+0Sv0+nMZrNerzebzQUFBb6FixYt8t148PipUyUSCcMw45Pt2E/OV6MhbgQACCGhb0QqlYa4EYZhAGB8fDzERh96JgBACOE4LsTtiESi8fHxJ91JpFKY8EXET6JQAMCYXD7JQ0J+mqELeheYKOgKZFmW47ig34/Hx8eDa/QSiSS4hGUyWdB1FXRhMwwTdMIsy3q93uAaPQB4vd4gRphhGLFYHPpeHLbz6JcvX261Wt955525c+empKSEa7MIzRS4C6CIFbZP9GKxuLy8PFxbQ2jGwV0ARSy8MhYhhKIcNnqEEIpy2OgRQijKYaNHCKEoh40eIYSiHDZ6hBCKctjoEUIoymGjRwihKIeNHiGEohw2eoQQinLY6BFCKMpho0cIoSiHjR4hhKIcNnqEEIpy2OgRQijKYaNHCKFoR2g7fvz4J598QjsLQgi5evVqRUUF7SwIIcTj8bzwwgtut5t2IoQQUlVVdeXKFdpZEEJIXV1dfX097SymEa0K3LRpk9VqFTiowWA4deqUwEGNRuPu3bsFDkoIKS4uHhwcFD6uX9hmmAqaw+EIfQLrsHC73TabjXYWAACEEIvFEtwcnmFns9ki5AVyOBwikYh2FtOIVgX29/cHPRVq0AYHB9VqtcBBKY4w3d2ZfqNXqVQymYx2FgAAcrlcq9XSzgIAgGGY5ORklo2IA2tarVY+6XzcglOpVBEyJtOEVgU+88wzwr+DJiYmxsXFCRyU4gjTLV2GEEIxPEIIoekWzZ+PEEIIAfVDNxzHGQwGm82Wk5OzdetWWmnU1NRUVlbK5XK6+bhcrv3794+OjqrV6srKSpFIRCsZh8Nx4MCBsbGxzMzMsrIynufpvkw3b948depUdXV1hBTMdAgYc4ZhBAvtH15hwg0NDVVWVioUCgB4/fXXk5OThYlLCKmrq7tx40Zqauprr70mTNDGxsavv/4aALxeb0FBwZYtW4SJG4DyJ3qj0ajVavfv32+xWCwWi/AJDA8PV1dXG43GSMintbV1wYIFH3zwQVpaWltbG8Vkmpubn3vuuYMHD9rt9jt37tAdFkJIfX297zb1gpk+AWMuWNyJwyuMgYGB1atXGwwGg8EgWJcHgJ6eHofD8f777wPAvXv3hAm6adMm3zNdtmzZs88+K0zQR1Fu9CaTKSsrCwCys7NNJpPwCSiVypqamsWLF0dCPunp6YWFhb6s6CazaNGigoICjuN4npdKpXSH5fz58zqdznebesFMn4AxFyzuxOEVxg8//NDT07Nnz56GhgYh/0fY1dWVn58PADt27EhKShIsLgBYrVaXy5WRkSFk0IkoN3qn06nRaABAo9E4nU7hE2AYRiqV+k85oJtPbm6uRqNpa2trb2/X6/UUk8nKypLJZGVlZYSQOXPmUMzE4/GcO3du7dq1vrvUC2b6BIy5MEEDhlcYarV648aNe/fu7e/vv3TpkmBxh4aGenp63njjjY8//liwoD6NjY0lJSUCB52IcqNXKBR2ux0AHjx44Dtm93POhxBy7Nixjo6Offv2KZVKiskMDw/LZLIjR46kpKRcuHCBYiYnT54sKiryvxNHWsGEUcCYCxM0YHiFsXDhwiVLlkgkEr1eL+RBKplMlpKSUlNTEx8f/9VXXwkW1+VyDQ0NCX/RwESUG71OpzObzQBgNpsF/v4YgfmcP39eJBKVl5f7Dt1QTKahoaG7u5thGLFY7PV6KWZy7969zz77rLa29tq1a2fOnIm0ggmjgDEXJmjA8AoTtKGhwWg0EkJMJlNqaqowQQEgMzMzJiaGYRilUinkIaOOjg7fISOKKJ9H7/V6Dx8+PDIykpaW9tJLL9FKY9++fbt375bL5XTz+eijjzo7O31XJ61fv37FihW0krFYLAcPHhSLxWq1uqKigmEYui/T/fv36+vrq6urI6RgpkPAmEskEsFC+4dXmHCDg4MHDhzgOG7evHm7du0S7Pwij8dTW1trt9tVKlVVVZVglwHW1tZu2LAhPT1dmHCTwgumEEIoyuEFUwghFOWw0SOEUJTDRo8QQlEOGz1CCEU5bPQIIRTlsNFHutbW1tLSUtpZIEQBFn+4YKNHCKEoh42epnXr1p0+fRoACCHZ2dnXr1/neX7nzp0pKSl5eXmvvvqqf4K3L774wv+rvNu2bfv8888B4NChQ9nZ2Tk5OVVVVREy7yBCTwiLX0jY6GkqKSk5ceIEAHR2diYkJOTl5fX29vb19ZnN5u7u7ubm5lu3bj3usRcuXGhqauro6Lh69ert27c//fRTARNHKFRY/EKiP2fsz1lxcfGePXu8Xm9TU5Pvgv68vLyGhoazZ89eunSpv79/ilm5m5ub7969u2bNGgBwOp1C/jgUQqHD4hcSNnqaZs2atXTp0vb29pMnT7a1tQHAN998s3379ldeeaW4uLi9vX3SRw0MDAAAz/Pbtm178803AcDpdOJPWaCZBYtfSHjohrKSkpK9e/fqdDrf5PQtLS3PP//8rl27AKCzs9Pj8fhWk8vlXV1dXq93YGDg3LlzALBq1arjx4//+OOPLpdr3bp1voUIzSBY/ILBRk/Z+vXrL1686P8hxtLS0tbW1tTU1LfffnvHjh3l5eW+5Xq9Pj8/Py8vr6ys7MUXXwSAlStXvvzyy8uWLdPpdKtWrSoqKqL2HBAKCha/YPDXKxFCKMrhJ3qEEIpy2OgRQijKYaNHCKEoh40eIYSi3H8AtgTM6yHpn+kAAAAASUVORK5CYII=" alt="plot of chunk plot"/></p>
-
-<pre><code class="r"># add curves to these, the population distribution and also the exponential and gausssian fits to our sampled data
-</code></pre>
-
-<p>Part 1: Simulation Exercise Instructions
-In this project you will investigate the exponential distribution in R and compare it with the Central Limit Theorem. The exponential distribution can be simulated in R with rexp(n, lambda) where lambda is the rate parameter. The mean of exponential distribution is 1/lambda and the standard deviation is also 1/lambda. Set lambda = 0.2 for all of the simulations. You will investigate the distribution of averages of 40 exponentials. Note that you will need to do a thousand simulations.</p>
-
-<p>Illustrate via simulation and associated explanatory text the <strong>properties of the distribution of the mean of 40 exponentials</strong> . You should</p>
-
-<p>Show the sample mean and compare it to the theoretical mean of the distribution.
-Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
-Show that the distribution is approximately normal.</p>
 
 </body>
 
