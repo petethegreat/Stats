@@ -32,8 +32,12 @@ Dosage regardless of method
 method regardless of dose
 method - growth per unit dose
 
+t distribution assumes data iid normal "but it is robust" to this
+unequal variance (the variances above are not equal)
+https://github.com/bcaffo/courses/blob/master/06_StatisticalInference/08_tCIs/index.pdf
+^ slide 21
 
-Can't use paired test, because we can't compute the differences (we have 60 seperate hamsters, not 10 that were fed vitamin c multiple times via different methods). independent group t intervals (unequal variance), with alternative that the difference is greater than zero (mu2.0 - mu 0.5)
+Can't use paired test, because we can't compute the differences (we have 60 seperate hamsters, not 10 that were fed vitamin c multiple times via different methods). independent group t intervals (unequal variance), with alternative that the difference is not equal to zero (mu2.0 - mu 0.5)
 
 ## Appendix
 
@@ -42,6 +46,12 @@ head(ToothGrowth)
 ToothGrowth %>% group_by(supp,dose) %>% summarise(meanlen=mean(len),varlen=var(len))
 ```
 
+```{r,quicktest}
+vc <-ToothGrowth %>% filter(supp=='VC')
+oj <-ToothGrowth %>% filter(supp=='OJ')
+moose<-t.test(x=oj$len,y=vc$len,paired=F)
+moose
+```
 
 
 ```{r,plot}
