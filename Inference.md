@@ -10,6 +10,10 @@ something about toothgrowth
 
 ### Data Summary
 
+Note the R code used to obtain these results is included in the appendix.
+
+There are 60 observations in the dataset. The length of guinea pig teeth (ondotoblasts) were measured after they had received some dose (either 0.5, 1.0, or 2.0 mg) of vitamen C, which was supplied either as orange juice (OJ) or an aqueous solution of ascorbic acid. (VC). Measurements were taken from 60 guinea pigs, such that each of the six dose/supplement combinations considered was administered to 10 animals. The mean and variance of the measured tooth length is listed below for each group.
+
  |supp | dose | meanlen | varlen |
  |-----|------|---------|--------|
  |  OJ |  0.5 |  13.23  |19.8890 |
@@ -19,7 +23,19 @@ something about toothgrowth
  |  VC |  1.0 |  16.77  | 6.3268 |
  |  VC |  2.0 |  26.14  |23.0182 |
 
-OJ seems to do more.
+Initially, it seems that OJ has a larger effect on tooth length, with higher doses correlating with longer tooth lengths. The analysis below will consider these hypotheses and verify whether or not they are statistically significant.
+
+## Analysis
+
+Will consider lengths from OJ vs lengths from VC, (neglecting dose). Histograms for these groups are plotted in the appendix
+
+Will use a two group independent (unpaired) t-test, assuming unequal variance (or rather, not assuming equal variance) among groups. Note that the t-test assumes that the observations are normally distributed (although apparently it is 'robust' to this assumption).
+
+In this case, the null hypothesis, $H_0$, is that the mean tooth length for each group is equal. Our alternate hypothesis, $H_a$ is that the means are *not* equal, and thus we will use a two sided t-test. We will require a 95% probability for statistical significance, that is, we will reject the null hypothesis if there is less than a 5\% probability of it producing the observed data.
+
+
+
+
 
 hypothesis tests:
 OJ is better than VC
@@ -241,7 +257,7 @@ for (i in 1:3)
 ## 	Welch Two Sample t-test
 ## 
 ## data:  ojdose$len and vcdose$len
-## t = -0.046136, df = 14.04, p-value = 0.9639
+## t = -0.0461, df = 14.04, p-value = 0.9639
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
 ##  -3.79807  3.63807
