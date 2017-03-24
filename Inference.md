@@ -16,7 +16,7 @@ There are 60 observations in the dataset. The length of guinea pig teeth (ondoto
 
  |supp | dose | meanlen | varlen |
  |-----|------|---------|--------|
- |  OJ |  0.5 |  13.23  |19.8890 |
+ |  OJ |  0.5 |  13.23  |19.8890 | 
  |  OJ |  1.0 |  22.70  |15.2956 |
  |  OJ |  2.0 |  26.06  | 7.0493 |
  |  VC |  0.5 |   7.98  | 7.5440 |
@@ -27,17 +27,44 @@ Initially, it seems that OJ has a larger effect on tooth length, with higher dos
 
 ## Analysis
 
-Will consider lengths from OJ vs lengths from VC, (neglecting dose). Histograms for these groups are plotted in the appendix
+### Supplement form
+**check this for language** - we use "statistical significance" a lot. is there a better term for $\alpha$, or something?
+In this section, the relationship between the supplement form (OJ vs VC) and tooth length will be analysed, neglecting dose.  Histograms of these groups are plotted in the appendix.
 
-Will use a two group independent (unpaired) t-test, assuming unequal variance (or rather, not assuming equal variance) among groups. Note that the t-test assumes that the observations are normally distributed (although apparently it is 'robust' to this assumption).
+A two group (independent) t-test will be used, assuming unequal variance (or rather, not assuming equal variance) among groups. Note that the t-test assumes that the observations are normally distributed (although apparently it is 'robust' to this assumption). A paired t-test cannot be used, as we cannot relate observations from one group to those in another (group observations were made from unique animals).
 
-In this case, the null hypothesis, $H_0$, is that the mean tooth length for each group is equal. Our alternate hypothesis, $H_a$ is that the means are *not* equal, and thus we will use a two sided t-test. We will require a 95% probability for statistical significance, that is, we will reject the null hypothesis if there is less than a 5\% probability of it producing the observed data.
+In this case, the null hypothesis, $H_0$, is that the mean tooth length for each group is equal. Our alternate hypothesis, $H_a$ is that the means are *not* equal, and thus we will use a two sided t-test. A p-value will be considered significant if it is less than $\alpha = 0.05$,  that is, the null hypothesis will be rejected if there is less than a 5\% probability of it producing the observed data.
 
+The t-test for supplement form has an associated t-statistic of 1.92, with a p-value of 0.06. For this result to be statistically significant at the 95\% level, we require a p-value less than 0.05. This is not the case, and so the null hypothesis is accepted, and we conclude that the supplement form (OJ vs VC) does not have a significant effect on tooth length.
 
+### Dose Level
+The relationship between vitamin C dose and toothe length will also be considered. There are three different dosages that were considered in the study. The tooth lengths for each of these dosages will be compared to those of the other two. As there are multiple hypotheses being compared, a bonferroni correction will be applied in order to limit the family wise error rate. While a p-value of $\alpha = 0.05$ was required for the supplement test, for the dosage tests the null hypothesis will only be rejected for p-values less than $\alpha_{fwer} = \alpha/2 = 0.025$, as each group of data is involved in two seperate hypothesis tests. As with the analysis of supplement form, a two group (independent) t-test with unequal variance is used to assess the significance.
 
+A summary of the test results is included in the table below:
 
+| group $A$ dose  (mg)| group $B$ dose (mg) | $\bar{X}_A $  ($\mu$m)| $\bar{X}_B$ ($\mu$m) | p-value |
+|-----------------------|-----------------------|------------------|---------------|------------|
+| 0.5 | 1.0 | 10.605  |  19.735 | 1.268e-07 |
+| 0.5 | 2.0 | 10.605  |  26.100 | 4.398e-14 |
+| 1.0 | 2.0 |19.735  |  26.100 | 1.906e-05 |
 
-hypothesis tests:
+In all of the above cases, the p-value is less than 0.025, which is the threshold required for significance. For each of these three cases the null hypothesis is rejected in favour of the alternative, i.e. different dosage levels are associated with different tooth lengths. 
+
+##Conclusions
+Based on the analyses presented in this report, the following conclusions can be drawn:
+
+- There is no significant difference in the measured tooth lengths for guinea pigs that received doses of abscorbic acid and guinea pigs that received doses of orange juice at the $\alpha = 0.05$ level
+- There is a significant difference in the tooth lengths observed for guinea pigs that received 0.5 mg of vitamin C compared to those that received 1.0 mg of vitamin C at the $\alpha_{fwer} = 0.025$ level
+- There is a significant difference in the tooth lengths observed for guinea pigs that received 0.5 mg of vitamin C compared to those that received 2.0 mg of vitamin C at the $\alpha_{fwer} = 0.025$ level
+- There is a significant difference in the tooth lengths observed for guinea pigs that received 1.0 mg of vitamin C compared to those that received 2.0 mg of vitamin C at the $\alpha_{fwer} = 0.025$ level
+
+### Assumptions
+In conducting this analysis, the following assumptions were made:
+
+- For a given dosage and supplement form, the tooth length observations are iid normal.
+- For 
+
+<!-- hypothesis tests:
 OJ is better than VC
 higher dose is better
 growth per dose?
@@ -57,10 +84,12 @@ Can't use paired test, because we can't compute the differences (we have 60 sepe
 
 Go over math in first section/method
 
-analysis section, make a bunch of tests
+analysis section, make a bunch of tests -->
 
 
 ## Appendix
+
+Summary of data - mean and variance of tooth length for each supplement/dose group
 
 
 ```r
@@ -117,6 +146,8 @@ ToothGrowth %>% group_by(supp,dose) %>% summarise(meanlen=mean(len),varlen=var(l
 ## 6     VC   2.0   26.14 23.018222
 ```
 
+t-test for supplement form
+
 
 ```r
 vc <-ToothGrowth %>% filter(supp=='VC')
@@ -139,14 +170,15 @@ moose
 ##  20.66333  16.96333
 ```
 
+Histograms of tooth length for the different supplement forms
+
+
 ```r
 ggplot(data=ToothGrowth,aes(x=len)) + geom_histogram(aes(fill=..count..),binwidth=2) + facet_grid( . ~supp) + scale_fill_gradientn(colours=c('blue','purple')) + guides(fill=F)
 ```
 
 ![plot of chunk plotdose2](figure/plotdose2-1.png)
-
-Check some of this stuff. We're running tests on lots of different subgroups, using the same data more than once. Should we be correcting/accounting for multiple testing?
-
+T-tests for the different dosage levels
 
 
 ```r
@@ -207,6 +239,7 @@ for (i in 1:2)
 ##    19.735    26.100
 ```
 
+Histograms of tooth length for the different dosage levels
 
 
 ```r
@@ -215,8 +248,7 @@ ggplot(data=ToothGrowth,aes(x=len)) + geom_histogram(aes(fill=..count..),binwidt
 
 ![plot of chunk plotdose](figure/plotdose-1.png)
 
-
-
+<!--
 
 ```r
 for (i in 1:3)
@@ -272,4 +304,5 @@ ggplot(data=ToothGrowth,aes(x=len)) + geom_histogram(aes(fill=..count..),binwidt
 ```
 
 ![plot of chunk plot](figure/plot-1.png)
+-->
 
