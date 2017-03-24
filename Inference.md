@@ -5,8 +5,7 @@ author: "Peter Thompson"
 # Inference
 
 ## Synopsis
-something about toothgrowth
-
+This study analyses R's toothgrowth dataset, originally from a [study in the Journal of Nutrition](http://jn.nutrition.org/content/33/5/491.full.pdf), which relates the measured length of teeth in guinea pigs to the dosage of vitamin C they received. The aim is to look for trends in the data, and determine if they are statistically significant.
 
 ### Data Summary
 
@@ -28,7 +27,6 @@ Initially, it seems that OJ has a larger effect on tooth length, with higher dos
 ## Analysis
 
 ### Supplement form
-**check this for language** - we use "statistical significance" a lot. is there a better term for $\alpha$, or something?
 In this section, the relationship between the supplement form (OJ vs VC) and tooth length will be analysed, neglecting dose.  Histograms of these groups are plotted in the appendix.
 
 A two group (independent) t-test will be used, assuming unequal variance (or rather, not assuming equal variance) among groups. Note that the t-test assumes that the observations are normally distributed (although apparently it is 'robust' to this assumption). A paired t-test cannot be used, as we cannot relate observations from one group to those in another (group observations were made from unique animals).
@@ -61,8 +59,9 @@ Based on the analyses presented in this report, the following conclusions can be
 ### Assumptions
 In conducting this analysis, the following assumptions were made:
 
-- For a given dosage and supplement form, the tooth length observations are iid normal.
-- For 
+- When grouped by dosage (neglecting supplement form),   the distributions of tooth length  are iid normal. This is assumed by the t-test.
+- When grouped by supplement form (neglecting dosage),   the distributions of tooth length  are iid normal. This is assumed by the t-test.
+
 
 <!-- hypothesis tests:
 OJ is better than VC
@@ -86,49 +85,31 @@ Go over math in first section/method
 
 analysis section, make a bunch of tests -->
 
+\newpage
 
 ## Appendix
+
+
+<!-- ``{r,packages}
+opts_chunk$set(fig.width=8, fig.height=8,dpi=144)
+require(ggplot2)
+require(dplyr)
+require(ggmap)
+``` -->
+load packages dplyr, ggplot2 (output suppressed).
+
+
+```r
+require(ggplot2)
+require(dplyr)
+```
 
 Summary of data - mean and variance of tooth length for each supplement/dose group
 
 
 ```r
-library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
-library(ggplot2)
-head(ToothGrowth)
-```
-
-```
-##    len supp dose
-## 1  4.2   VC  0.5
-## 2 11.5   VC  0.5
-## 3  7.3   VC  0.5
-## 4  5.8   VC  0.5
-## 5  6.4   VC  0.5
-## 6 10.0   VC  0.5
-```
-
-```r
+opts_chunk$set(fig.width=3, fig.height=3,dpi=72, dev = 'pdf')
+# head(ToothGrowth)
 ToothGrowth %>% group_by(supp,dose) %>% summarise(meanlen=mean(len),varlen=var(len))
 ```
 
@@ -174,10 +155,15 @@ Histograms of tooth length for the different supplement forms
 
 
 ```r
-ggplot(data=ToothGrowth,aes(x=len)) + geom_histogram(aes(fill=..count..),binwidth=2) + facet_grid( . ~supp) + scale_fill_gradientn(colours=c('blue','purple')) + guides(fill=F)
+ggplot(data=ToothGrowth,aes(x=len)) + 
+geom_histogram(aes(fill=..count..),binwidth=2) + 
+facet_grid( . ~supp) + 
+scale_fill_gradientn(colours=c('blue','purple')) + 
+guides(fill=F)
 ```
 
-![plot of chunk plotdose2](figure/plotdose2-1.png)
+![plot of chunk plotdose2](figure/plotdose2-1.pdf)
+
 T-tests for the different dosage levels
 
 
@@ -192,7 +178,10 @@ for (i in 1:2)
         groupa<- ToothGrowth %>% filter(dose ==doses[i])
         groupb<- ToothGrowth %>% filter(dose ==doses[j])
         test<-t.test(x=groupa$len,y=groupb$len,paired=F)
-        print(test)
+       print(paste("p- value = ",test$p.value))
+	print(paste("confidence interval = ",test$conf.int[1], test$conf.int[2]))
+	print(paste("mean estimates= ",test$estimate[1], test$estimate[2]))
+	   
 
     }
 }
@@ -200,53 +189,29 @@ for (i in 1:2)
 
 ```
 ## [1] "0.5  vs  1"
-## 
-## 	Welch Two Sample t-test
-## 
-## data:  groupa$len and groupb$len
-## t = -6.4766, df = 37.986, p-value = 1.268e-07
-## alternative hypothesis: true difference in means is not equal to 0
-## 95 percent confidence interval:
-##  -11.983781  -6.276219
-## sample estimates:
-## mean of x mean of y 
-##    10.605    19.735 
-## 
+## [1] "p- value =  1.26830072017385e-07"
+## [1] "confidence interval =  -11.9837812579016 -6.27621874209841"
+## [1] "mean estimates=  10.605 19.735"
 ## [1] "0.5  vs  2"
-## 
-## 	Welch Two Sample t-test
-## 
-## data:  groupa$len and groupb$len
-## t = -11.799, df = 36.883, p-value = 4.398e-14
-## alternative hypothesis: true difference in means is not equal to 0
-## 95 percent confidence interval:
-##  -18.15617 -12.83383
-## sample estimates:
-## mean of x mean of y 
-##    10.605    26.100 
-## 
+## [1] "p- value =  4.39752495936323e-14"
+## [1] "confidence interval =  -18.1561665388306 -12.8338334611694"
+## [1] "mean estimates=  10.605 26.1"
 ## [1] "1  vs  2"
-## 
-## 	Welch Two Sample t-test
-## 
-## data:  groupa$len and groupb$len
-## t = -4.9005, df = 37.101, p-value = 1.906e-05
-## alternative hypothesis: true difference in means is not equal to 0
-## 95 percent confidence interval:
-##  -8.996481 -3.733519
-## sample estimates:
-## mean of x mean of y 
-##    19.735    26.100
+## [1] "p- value =  1.9064295136718e-05"
+## [1] "confidence interval =  -8.99648051689202 -3.73351948310799"
+## [1] "mean estimates=  19.735 26.1"
 ```
 
 Histograms of tooth length for the different dosage levels
 
 
 ```r
-ggplot(data=ToothGrowth,aes(x=len)) + geom_histogram(aes(fill=..count..),binwidth=2) + facet_grid( . ~dose) + scale_fill_gradientn(colours=c('blue','purple')) + guides(fill=F)
+ggplot(data=ToothGrowth,aes(x=len)) + 
+geom_histogram(aes(fill=..count..),binwidth=2) + facet_grid( . ~dose) + 
+scale_fill_gradientn(colours=c('blue','purple')) + guides(fill=F)
 ```
 
-![plot of chunk plotdose](figure/plotdose-1.png)
+![plot of chunk plotdose](figure/plotdose-1.pdf)
 
 <!--
 
@@ -303,6 +268,6 @@ for (i in 1:3)
 ggplot(data=ToothGrowth,aes(x=len)) + geom_histogram(aes(fill=..count..),binwidth=2) + facet_grid( supp ~dose) + scale_fill_gradientn(colours=c('blue','purple'))+ guides(fill=F)
 ```
 
-![plot of chunk plot](figure/plot-1.png)
+![plot of chunk plot](figure/plot-1.pdf)
 -->
 

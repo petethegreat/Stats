@@ -5,8 +5,7 @@ author: "Peter Thompson"
 # Inference
 
 ## Synopsis
-something about toothgrowth
-
+This study analyses R's toothgrowth dataset, originally from a [study in the Journal of Nutrition](http://jn.nutrition.org/content/33/5/491.full.pdf), which relates the measured length of teeth in guinea pigs to the dosage of vitamin C they received. The aim is to look for trends in the data, and determine if they are statistically significant.
 
 ### Data Summary
 
@@ -28,7 +27,6 @@ Initially, it seems that OJ has a larger effect on tooth length, with higher dos
 ## Analysis
 
 ### Supplement form
-**check this for language** - we use "statistical significance" a lot. is there a better term for $\alpha$, or something?
 In this section, the relationship between the supplement form (OJ vs VC) and tooth length will be analysed, neglecting dose.  Histograms of these groups are plotted in the appendix.
 
 A two group (independent) t-test will be used, assuming unequal variance (or rather, not assuming equal variance) among groups. Note that the t-test assumes that the observations are normally distributed (although apparently it is 'robust' to this assumption). A paired t-test cannot be used, as we cannot relate observations from one group to those in another (group observations were made from unique animals).
@@ -61,8 +59,9 @@ Based on the analyses presented in this report, the following conclusions can be
 ### Assumptions
 In conducting this analysis, the following assumptions were made:
 
-- For a given dosage and supplement form, the tooth length observations are iid normal.
-- For 
+- When grouped by dosage (neglecting supplement form),   the distributions of tooth length  are iid normal. This is assumed by the t-test.
+- When grouped by supplement form (neglecting dosage),   the distributions of tooth length  are iid normal. This is assumed by the t-test.
+
 
 <!-- hypothesis tests:
 OJ is better than VC
@@ -86,15 +85,29 @@ Go over math in first section/method
 
 analysis section, make a bunch of tests -->
 
+\newpage
 
 ## Appendix
+
+
+<!-- ``{r,packages}
+opts_chunk$set(fig.width=8, fig.height=8,dpi=144)
+require(ggplot2)
+require(dplyr)
+require(ggmap)
+``` -->
+load packages dplyr, ggplot2 (output suppressed).
+
+```{r, packages,message=F,warnings=F,results='hide'}
+require(ggplot2)
+require(dplyr)
+```
 
 Summary of data - mean and variance of tooth length for each supplement/dose group
 
 ```{r,load}
-library(dplyr)
-library(ggplot2)
-head(ToothGrowth)
+opts_chunk$set(fig.width=3, fig.height=3,dpi=72, dev = 'pdf')
+# head(ToothGrowth)
 ToothGrowth %>% group_by(supp,dose) %>% summarise(meanlen=mean(len),varlen=var(len))
 ```
 
@@ -110,8 +123,14 @@ moose
 Histograms of tooth length for the different supplement forms
 
 ```{r,plotdose2}
-ggplot(data=ToothGrowth,aes(x=len)) + geom_histogram(aes(fill=..count..),binwidth=2) + facet_grid( . ~supp) + scale_fill_gradientn(colours=c('blue','purple')) + guides(fill=F)
+
+ggplot(data=ToothGrowth,aes(x=len)) + 
+geom_histogram(aes(fill=..count..),binwidth=2) + 
+facet_grid( . ~supp) + 
+scale_fill_gradientn(colours=c('blue','purple')) + 
+guides(fill=F)
 ```
+
 T-tests for the different dosage levels
 
 ```{r,dothetests}
@@ -125,7 +144,10 @@ for (i in 1:2)
         groupa<- ToothGrowth %>% filter(dose ==doses[i])
         groupb<- ToothGrowth %>% filter(dose ==doses[j])
         test<-t.test(x=groupa$len,y=groupb$len,paired=F)
-        print(test)
+       print(paste("p- value = ",test$p.value))
+	print(paste("confidence interval = ",test$conf.int[1], test$conf.int[2]))
+	print(paste("mean estimates= ",test$estimate[1], test$estimate[2]))
+	   
 
     }
 }
@@ -134,7 +156,10 @@ for (i in 1:2)
 Histograms of tooth length for the different dosage levels
 
 ```{r,plotdose}
-ggplot(data=ToothGrowth,aes(x=len)) + geom_histogram(aes(fill=..count..),binwidth=2) + facet_grid( . ~dose) + scale_fill_gradientn(colours=c('blue','purple')) + guides(fill=F)
+
+ggplot(data=ToothGrowth,aes(x=len)) + 
+geom_histogram(aes(fill=..count..),binwidth=2) + facet_grid( . ~dose) + 
+scale_fill_gradientn(colours=c('blue','purple')) + guides(fill=F)
 ```
 
 <!--
