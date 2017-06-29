@@ -11,7 +11,7 @@ This study analyses R's toothgrowth dataset, originally from a [study in the Jou
 
 Note the R code used to obtain these results is included in the appendix.
 
-There are 60 observations in the dataset. The length of guinea pig teeth (ondontoblasts) were measured after they had received some dose (either 0.5, 1.0, or 2.0 mg) of vitamin C, which was supplied either as orange juice (OJ) or an aqueous solution of ascorbic acid. (VC). Measurements were taken from 60 guinea pigs, such that each of the six dose/supplement combinations considered was administered to 10 animals. The mean and variance of the measured tooth length is listed below for each group.
+There are 60 observations in the dataset. The length of guinea pig teeth (ondotoblasts) were measured after they had received some dose (either 0.5, 1.0, or 2.0 mg) of vitamen C, which was supplied either as orange juice (OJ) or an aqueous solution of ascorbic acid. (VC). Measurements were taken from 60 guinea pigs, such that each of the six dose/supplement combinations considered was administered to 10 animals. The mean and variance of the measured tooth length is listed below for each group.
 
  |supp | dose | meanlen | varlen |
  |-----|------|---------|--------|
@@ -36,7 +36,7 @@ In this case, the null hypothesis, $H_0$, is that the mean tooth length for each
 The t-test for supplement form has an associated t-statistic of 1.92, with a p-value of 0.06. For this result to be statistically significant at the 95\% level, we require a p-value less than 0.05. This is not the case, and so the null hypothesis is accepted, and we conclude that the supplement form (OJ vs VC) does not have a significant effect on tooth length.
 
 ### Dose Level
-The relationship between vitamin C dose and tooth length will also be considered. There are three different dosages that were considered in the study. The tooth lengths for each of these dosages will be compared to those of the other two. As there are multiple hypotheses being compared, a bonferroni correction will be applied in order to limit the family wise error rate. While a p-value of $\alpha = 0.05$ was required for the supplement test, for the dosage tests the null hypothesis will only be rejected for p-values less than $\alpha_{fwer} = \alpha/2 = 0.025$, as each group of data is involved in two separate hypothesis tests. As with the analysis of supplement form, a two group (independent) t-test with unequal variance is used to assess the significance.
+The relationship between vitamin C dose and toothe length will also be considered. There are three different dosages that were considered in the study. The tooth lengths for each of these dosages will be compared to those of the other two. As there are multiple hypotheses being compared, a bonferroni correction will be applied in order to limit the family wise error rate. While a p-value of $\alpha = 0.05$ was required for the supplement test, for the dosage tests the null hypothesis will only be rejected for p-values less than $\alpha_{fwer} = \alpha/2 = 0.025$, as each group of data is involved in two seperate hypothesis tests. As with the analysis of supplement form, a two group (independent) t-test with unequal variance is used to assess the significance.
 
 A summary of the test results is included in the table below:
 

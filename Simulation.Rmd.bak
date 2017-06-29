@@ -9,7 +9,7 @@ This project is about simulation of random variables and the central limit theor
 
 ### Exponential distribution
 
-For random variables drawn from a (continuous) exponential distribution of rate $\lambda$, the probability distribution function is given by
+For random variables drawn from a (continuous) exponential distribution of rate $\lambda$, the propability distribution function is given by
 $$
 P(x) = \lambda e^{-\lambda x} , \quad x \geq 0.
 $$ 
@@ -17,7 +17,7 @@ $$
 This distribution has a population mean of $\mu =1/\lambda$, a population variance of $1/\lambda^2$, and a standard deviation of $\sigma = 1/\lambda$.
 
 ### Central Limit Theorem
-The central limit theorem states that as the sample size increases the mean of a sample of iid random variables should itself behave like a random normal variable, with mean equal to the mean of the original population, and standard deviation equal to the standard error of the sample mean.
+The central limit theorem states that as the sample size increases the mean of a sample of iid random variables should itself behave like a random normal variable, with mean equal to the mean of the original population, and stamdard deviation equal to the standard error of the sample mean.
 
 ## Simulation
 
@@ -53,7 +53,7 @@ X | Area within $X\sigma$ of mean for a normal distribution | fraction within $X
 There is good agreement between the proportions of sample means and the probabilities from the normal distribution. Histograms are plotted for the exponential sample and the means of 1000 exponential samples in the appendix. The sample means have a distribution that appears to be normal.
 
 ## Conclusion
-The means of simulated samples of random variables drawn from an exponential distribution are (at least approximately) normally distributed. This is consistent with the central limit theorem.
+The means of simulated samples of random variables drawn from an exponential distibution are (at least approximately) normally distributed. This is consistent with the central limit theorem.
 
 
 \newpage
